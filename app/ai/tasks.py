@@ -117,6 +117,26 @@ def read_form(image_bytes: bytes, mime: str = "image/jpeg", calls: list[CallReco
     )
 
 
+REREAD_SCHEMA = {
+    "type": "object",
+    "properties": {"characters": {"type": "array", "items": {"type": "string"}}, "entry_number": {"type": "string"}},
+    "required": ["characters", "entry_number"], "additionalProperties": False,
+}
+
+
+def reread_entry_number(image_bytes: bytes, mime: str = "image/jpeg", calls: list[CallRecord] | None = None) -> str:
+    """Second, focused look when the first reading fails the CBP check digit: Super VL with reasoning on, Block 1 only,
+    character by character (the usual misses are a dropped digit in a run of repeats, or Q read as 0)."""
+    b64 = base64.b64encode(image_bytes).decode()
+    out = chat_json(settings.super_vl, [{"role": "user", "content": [
+        {"type": "text", "text": "Look only at Block 1 'Filer Code/Entry No.' at the top left of this CBP Form 7501. Read the entry number "
+                                 "one character at a time and list every character in order, including repeated digits. It is a 3-character filer "
+                                 "code (letters or digits), a dash, exactly 7 digits, a dash, and 1 check digit. Then give the full number."},
+        {"type": "image_url", "image_url": {"url": f"data:{mime};base64,{b64}"}}]}],
+        schema=REREAD_SCHEMA, purpose="Re-read entry number", reasoning=True, max_tokens=2000, calls=calls)
+    return out.get("entry_number", "")
+
+
 # ---------------------------------------------------------------------------------------
 # 3. Action plan over the whole ledger (Ultra)
 # ---------------------------------------------------------------------------------------

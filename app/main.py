@@ -151,6 +151,13 @@ async def analyze_upload(
         except LiveModelUnavailable:
             raise HTTPException(503, "Reading photos needs the AI service, which isn't available right now. Try the CSV path or the sample.")
         form, changed = _checked_form(form, known_filers)
+        if EN.validate(form.get("entry_number", "")):  # still fails the check digit: one focused second look
+            try:
+                again, changed2 = _checked_form(form | {"entry_number": tasks.reread_entry_number(data, ph.content_type or "image/jpeg", calls)}, known_filers)
+                if not EN.validate(again["entry_number"]):
+                    form, changed = again | {"entry_number_as_read": form.get("entry_number_as_read") or form["entry_number"]}, True
+            except LiveModelUnavailable:
+                pass
         review_grid.append({"file": ph.filename, "fields": form, "corrected": changed})
         entries.append(form_to_entry(form, ph.filename))
     if photos:

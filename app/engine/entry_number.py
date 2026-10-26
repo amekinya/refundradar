@@ -53,7 +53,7 @@ def validate(raw: str) -> list[str]:
 
 # Characters a camera or a vision model confuses on printed forms.
 _LOOKALIKE = {"0": "QOD", "Q": "0O", "O": "0Q", "D": "0", "2": "Z", "Z": "2", "1": "IL", "I": "1", "L": "1",
-              "5": "S", "S": "5", "8": "B", "B": "8", "6": "G", "G": "6", "K": "M", "M": "K"}
+              "5": "S", "S": "5", "8": "B", "B": "8", "6": "G", "G": "6", "K": "M", "M": "K", "7": "T", "T": "7"}
 _TO_DIGIT = {"O": "0", "Q": "0", "D": "0", "I": "1", "L": "1", "Z": "2", "S": "5", "B": "8", "G": "6"}
 
 

@@ -150,15 +150,23 @@ def forms() -> dict:
             fields[k][0] += v; fields[k][1] += 1
         # The app repairs look-alike misreads with the CBP check digit, using the filer codes in the importer's own export.
         fixed, _ = EN.repair(got.get("entry_number", ""), KNOWN_FILERS)
+        if EN.validate(fixed):  # same as the app: one focused re-read when the check digit still fails
+            try:
+                fixed2, _ = EN.repair(tasks.reread_entry_number(f.read_bytes(), "image/jpeg", local), KNOWN_FILERS)
+                if not EN.validate(fixed2):
+                    fixed = fixed2
+            except Exception:  # noqa: BLE001
+                pass
+            calls.extend(c for c in local if c.purpose == "Re-read entry number" and c not in calls)
         repaired_ok = alnum(fixed) == alnum(truth["entry_number"])
         flagged = bool(EN.validate(fixed))
-        fields["entry_number_after_check_digit_repair"][0] += repaired_ok; fields["entry_number_after_check_digit_repair"][1] += 1
+        fields["entry_number_after_check_digit"][0] += repaired_ok; fields["entry_number_after_check_digit"][1] += 1
         if not repaired_ok:
             unrepaired.append(flagged)
         wrong = {k: [str(got.get(k, ""))[:40], str(truth.get(k, ""))[:40]] for k, v in checks.items() if not v and k in truth}
         per_photo.append({"file": f.name, "strength": truth["photo_strength"], "all_correct": all(checks.values()), "wrong": wrong,
                           "seconds": round(sum(c.seconds for c in local), 2), "cost_usd": round(sum(c.cost_usd for c in local), 5)})
-    base = {k: v for k, v in fields.items() if k != "entry_number_after_check_digit_repair"}
+    base = {k: v for k, v in fields.items() if k != "entry_number_after_check_digit"}
     total_fields = sum(v[1] for v in base.values())
     return {"n": len(files), "field_accuracy": {k: round(a / b, 3) for k, (a, b) in fields.items()},
             "overall_field_accuracy": round(sum(v[0] for v in base.values()) / max(total_fields, 1), 3),
@@ -260,7 +268,9 @@ def render_md(r: dict) -> str:
         L += [f"\n## 2. Reading {f['n']} photographed Form 7501s (Nemotron 3.5 Super VL)\n", "| Field | Accuracy |", "|---|---|"]
         L += [f"| {k} | {v:.0%} |" for k, v in f["field_accuracy"].items()]
         if "wrong_entry_numbers_flagged_for_review" in f:
-            L += [f"\nEntry numbers still wrong after the check-digit repair that fail validation, so the app flags them for review: {f['wrong_entry_numbers_flagged_for_review']}."]
+            L += [f"\n`entry_number_after_check_digit`: when the reading fails the CBP check digit, code tries look-alike characters against the importer's known "
+                  f"filer codes, then asks Super VL (reasoning on) to re-read Block 1 once. Entry numbers still wrong that fail validation, so the app flags "
+                  f"them for review: {f['wrong_entry_numbers_flagged_for_review']}."]
         L += [f"\nAll fields correct on {f['photos_fully_correct']:.0%} of photos; by photo quality (light/medium/heavy distortion): "
               + ", ".join(f"{k}: {v:.0%}" for k, v in f["by_photo_quality"].items()) + f". Avg {f['avg_seconds']}s per photo, total ${f['cost_usd']:.3f}."]
     if "offers" in r:
