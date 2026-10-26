@@ -1,0 +1,23 @@
+{
+ "entry_number": "T2R-3759759-3",
+ "entry_type": "01",
+ "entry_date": "10/06/2025",
+ "importer_number": "00-2264918AB",
+ "importer_name": "NORTHBAY KITCHEN SUPPLY CO",
+ "country_of_origin": "CN",
+ "total_duty": 953.04,
+ "lines": [
+  {
+   "line_no": "001",
+   "hts_numbers": [
+    "9903.01.25",
+    "4420.90.8000"
+   ],
+   "duties": [
+    722.0,
+    231.04
+   ]
+  }
+ ],
+ "photo_strength": 0.2
+}

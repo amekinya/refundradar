@@ -1,0 +1,45 @@
+{
+ "entry_number": "K4M-1383043-1",
+ "entry_type": "01",
+ "entry_date": "05/01/2025",
+ "importer_number": "00-4417730ZZ",
+ "importer_name": "SWIFTLINE EXPRESS INC",
+ "country_of_origin": "IN",
+ "total_duty": 4896.47,
+ "lines": [
+  {
+   "line_no": "001",
+   "hts_numbers": [
+    "9903.02.26",
+    "4420.90.8000"
+   ],
+   "duties": [
+    917.5,
+    117.44
+   ]
+  },
+  {
+   "line_no": "002",
+   "hts_numbers": [
+    "9903.02.26",
+    "6912.00.4810"
+   ],
+   "duties": [
+    945.0,
+    370.44
+   ]
+  },
+  {
+   "line_no": "003",
+   "hts_numbers": [
+    "9903.02.26",
+    "9405.41.8400"
+   ],
+   "duties": [
+    2202.5,
+    343.59
+   ]
+  }
+ ],
+ "photo_strength": 0.2
+}

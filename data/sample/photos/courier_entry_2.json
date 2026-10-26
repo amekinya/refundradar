@@ -1,0 +1,22 @@
+{
+ "entry_number": "Q7Z-8390903-5",
+ "entry_type": "01",
+ "entry_date": "09/12/2025",
+ "importer_number": "00-4417730ZZ",
+ "importer_name": "SWIFTLINE EXPRESS INC",
+ "country_of_origin": "CN",
+ "total_duty": 758.64,
+ "lines": [
+  {
+   "line_no": "001",
+   "hts_numbers": [
+    "9903.01.24",
+    "4420.90.8000"
+   ],
+   "duties": [
+    654.0,
+    104.64
+   ]
+  }
+ ]
+}

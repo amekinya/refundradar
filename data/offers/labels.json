@@ -1,0 +1,137 @@
+[
+ {
+  "file": "offer_00.txt",
+  "label": "likely_scam",
+  "flags": [
+   "claims_to_be_cbp_or_government",
+   "asks_for_ace_login",
+   "urgency_pressure"
+  ]
+ },
+ {
+  "file": "offer_01.txt",
+  "label": "likely_scam",
+  "flags": [
+   "asks_for_bank_details",
+   "upfront_payment",
+   "urgency_pressure"
+  ]
+ },
+ {
+  "file": "offer_02.txt",
+  "label": "likely_scam",
+  "flags": [
+   "urgency_pressure",
+   "qr_code_or_link_to_pay"
+  ]
+ },
+ {
+  "file": "offer_03.txt",
+  "label": "likely_scam",
+  "flags": [
+   "guarantees_refund",
+   "processes_refunds_outside_ace",
+   "upfront_payment"
+  ]
+ },
+ {
+  "file": "offer_04.txt",
+  "label": "likely_scam",
+  "flags": [
+   "claims_to_be_cbp_or_government",
+   "asks_for_bank_details"
+  ]
+ },
+ {
+  "file": "offer_05.txt",
+  "label": "likely_scam",
+  "flags": [
+   "urgency_pressure",
+   "asks_for_ace_login"
+  ]
+ },
+ {
+  "file": "offer_06.txt",
+  "label": "likely_scam",
+  "flags": [
+   "qr_code_or_link_to_pay",
+   "asks_for_bank_details"
+  ]
+ },
+ {
+  "file": "offer_07.txt",
+  "label": "likely_scam",
+  "flags": [
+   "upfront_payment",
+   "guarantees_refund",
+   "processes_refunds_outside_ace"
+  ]
+ },
+ {
+  "file": "offer_08.txt",
+  "label": "likely_scam",
+  "flags": [
+   "upfront_payment",
+   "urgency_pressure"
+  ]
+ },
+ {
+  "file": "offer_09.txt",
+  "label": "likely_scam",
+  "flags": [
+   "claims_to_be_cbp_or_government",
+   "asks_for_ace_login",
+   "guarantees_refund"
+  ]
+ },
+ {
+  "file": "offer_10.txt",
+  "label": "reasonable",
+  "flags": []
+ },
+ {
+  "file": "offer_11.txt",
+  "label": "reasonable",
+  "flags": []
+ },
+ {
+  "file": "offer_12.txt",
+  "label": "reasonable",
+  "flags": []
+ },
+ {
+  "file": "offer_13.txt",
+  "label": "reasonable",
+  "flags": []
+ },
+ {
+  "file": "offer_14.txt",
+  "label": "reasonable",
+  "flags": []
+ },
+ {
+  "file": "offer_15.txt",
+  "label": "expensive",
+  "flags": []
+ },
+ {
+  "file": "offer_16.txt",
+  "label": "expensive",
+  "flags": []
+ },
+ {
+  "file": "offer_17.txt",
+  "label": "expensive",
+  "flags": []
+ },
+ {
+  "file": "offer_18.txt",
+  "label": "reasonable",
+  "flags": []
+ },
+ {
+  "file": "offer_19.txt",
+  "label": "reasonable",
+  "flags": []
+ }
+]

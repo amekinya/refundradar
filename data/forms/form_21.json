@@ -1,0 +1,23 @@
+{
+ "entry_number": "K4M-6869045-8",
+ "entry_type": "01",
+ "entry_date": "10/19/2025",
+ "importer_number": "00-2264918AB",
+ "importer_name": "NORTHBAY KITCHEN SUPPLY CO",
+ "country_of_origin": "CN",
+ "total_duty": 1705.2,
+ "lines": [
+  {
+   "line_no": "001",
+   "hts_numbers": [
+    "9903.01.24",
+    "4420.90.8000"
+   ],
+   "duties": [
+    1470.0,
+    235.2
+   ]
+  }
+ ],
+ "photo_strength": 0.2
+}

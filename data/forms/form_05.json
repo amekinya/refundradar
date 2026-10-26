@@ -1,0 +1,34 @@
+{
+ "entry_number": "Q7Z-4841005-3",
+ "entry_type": "11",
+ "entry_date": "10/14/2025",
+ "importer_number": "00-9081236AA",
+ "importer_name": "MAPLEFORD OUTDOOR LLC",
+ "country_of_origin": "VN",
+ "total_duty": 3578.2,
+ "lines": [
+  {
+   "line_no": "001",
+   "hts_numbers": [
+    "9903.02.69",
+    "9405.41.8400"
+   ],
+   "duties": [
+    1528.0,
+    297.96
+   ]
+  },
+  {
+   "line_no": "002",
+   "hts_numbers": [
+    "9903.02.69",
+    "6912.00.4810"
+   ],
+   "duties": [
+    1176.0,
+    576.24
+   ]
+  }
+ ],
+ "photo_strength": 0.9
+}

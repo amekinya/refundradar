@@ -1,0 +1,23 @@
+{
+ "entry_number": "T2R-8072000-1",
+ "entry_type": "01",
+ "entry_date": "04/20/2025",
+ "importer_number": "00-4417730ZZ",
+ "importer_name": "SWIFTLINE EXPRESS INC",
+ "country_of_origin": "CN",
+ "total_duty": 1013.84,
+ "lines": [
+  {
+   "line_no": "001",
+   "hts_numbers": [
+    "9903.01.24",
+    "4420.90.8000"
+   ],
+   "duties": [
+    874.0,
+    139.84
+   ]
+  }
+ ],
+ "photo_strength": 0.9
+}

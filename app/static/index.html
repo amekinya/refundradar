@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RefundRadar</title>
+<meta name="description" content="A self-check for small importers: what you're owed from the IEEPA tariff refunds, which entries are about to expire, what will block the money, and what it should cost to recover it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='none' stroke='%231d2a3f' stroke-width='3'/%3E%3Cpath d='M16 16 L26 8' stroke='%23c43a2f' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="wrap top-row">
+    <a class="brand" href="/" aria-label="RefundRadar home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" /><circle cx="16" cy="16" r="7" /><path d="M16 16 L26 8" /></svg>
+      <span>RefundRadar</span>
+    </a>
+    <p class="top-note">A self-check for importers. Not a customs broker. Doesn't file with CBP.</p>
+    <button class="fresh" id="freshBtn" type="button" aria-live="polite">Rules checked Oct 25, 2026</button>
+  </div>
+</header>
+
+<main id="main">
+  <!-- ============ START ============ -->
+  <section id="start" class="wrap start">
+    <div class="start-copy">
+      <h1>Before you pay anyone to chase your tariff refund, see what you're owed, what's about to expire, and what will block the money.</h1>
+      <p class="lede">Upload your ACE entry export or photos of your entry summaries. RefundRadar routes every entry through CBP's current refund rules and tells you what to do next, in plain English.</p>
+      <div class="start-actions">
+        <button class="btn primary" id="sampleBtn" type="button">See it with a sample importer</button>
+        <a class="btn ghost" href="#upload">Check my own entries</a>
+      </div>
+      <ul class="facts">
+        <li><strong>$1.1 billion</strong> in approved refunds is on hold because importers never added refund bank details (CBP, Oct 2, 2026).</li>
+        <li><strong>80 days</strong> after an entry liquidates, it drops out of CBP's refund tool for good, unless you're in court.</li>
+        <li><strong>CBP warns</strong> that outside parties offering to process your refund are likely fraudulent.</li>
+      </ul>
+    </div>
+
+    <form id="upload" class="upload" aria-labelledby="uploadTitle">
+      <h2 id="uploadTitle">Check your own entries</h2>
+      <div class="field-group">
+        <label class="drop" for="csvInput">
+          <span class="drop-title">ACE ES-003 export (.csv)</span>
+          <span class="drop-hint">Reports → Entry Summary → ES-003 Line Tariff Details. Other spreadsheets work too.</span>
+          <span class="drop-file" id="csvName">No file chosen</span>
+          <input id="csvInput" name="csv_file" type="file" accept=".csv,text/csv">
+        </label>
+        <label class="drop" for="photoInput">
+          <span class="drop-title">Photos of entry summaries (Form 7501)</span>
+          <span class="drop-hint">No ACE account yet? Use the copies your broker or courier sent you.</span>
+          <span class="drop-file" id="photoName">No photos chosen</span>
+          <input id="photoInput" name="photos" type="file" accept="image/*" multiple>
+        </label>
+      </div>
+      <fieldset class="questions">
+        <legend>Five quick questions</legend>
+        <label class="q"><span>Your importer number <small>(from Block 23 of your forms)</small></span>
+          <input type="text" name="importer_number" placeholder="e.g. 12-3456789AA" autocomplete="off"></label>
+        <div class="q"><span>Do you have an ACE Portal account?</span><div class="seg" data-name="has_ace_account"><button type="button" data-v="true">Yes</button><button type="button" data-v="false">No</button><button type="button" data-v="unknown" class="on">Not sure</button></div></div>
+        <div class="q"><span>Have you added refund bank details in ACE?</span><div class="seg" data-name="ach_refund_enrolled"><button type="button" data-v="true">Yes</button><button type="button" data-v="false">No</button><button type="button" data-v="unknown" class="on">Not sure</button></div></div>
+        <div class="q"><span>Did you sue at the Court of International Trade?</span><div class="seg" data-name="cit_plaintiff"><button type="button" data-v="true">Yes</button><button type="button" data-v="false" class="on">No</button></div></div>
+        <div class="q"><span>Is your business a corporation?</span><div class="seg" data-name="corporate"><button type="button" data-v="true" class="on">Yes</button><button type="button" data-v="false">No</button></div></div>
+      </fieldset>
+      <button class="btn primary wide" type="submit" id="runBtn">Check my entries</button>
+      <p class="privacy">Files are processed in memory and never saved. Photos are read by an AI model hosted on Nebius. We never ask for ACE passwords or bank details.</p>
+    </form>
+  </section>
+
+  <!-- ============ WORKING ============ -->
+  <section id="working" class="wrap working" hidden aria-live="polite">
+    <h2>Checking your entries</h2>
+    <ol id="workSteps" class="work-steps"></ol>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section id="results" class="results" hidden>
+    <div class="wrap">
+      <div class="demo-note" id="demoNote" hidden>Sample importer: <strong>Prairie Lantern Home Goods</strong> (invented company, synthetic data), evaluated as of Oct 25, 2026. <button type="button" class="link" id="backBtn">Check your own entries instead</button></div>
+
+      <div class="verdict">
+        <h1 id="verdictText" class="verdict-text"></h1>
+        <p id="verdictSub" class="verdict-sub"></p>
+      </div>
+
+      <div id="stopBanner" class="stop" hidden role="alert"></div>
+
+      <section class="radar" aria-labelledby="radarTitle">
+        <div class="sec-head">
+          <h2 id="radarTitle">Deadline radar</h2>
+          <p>Money on your entries that leaves a refund window each week. Hover or tap a week.</p>
+        </div>
+        <div class="radar-legend">
+          <span class="lg cape">CBP refund tool window closes</span>
+          <span class="lg protest">Protest deadline</span>
+          <span class="lg court">Court-filing decision point</span>
+        </div>
+        <div id="radarChart" class="radar-chart" role="img"></div>
+        <p id="radarReadout" class="radar-readout" aria-live="polite"></p>
+      </section>
+
+      <section class="split" aria-labelledby="whereTitle">
+        <div class="sec-head">
+          <h2 id="whereTitle">Where the money sits</h2>
+          <p>Every entry, sorted by what has to happen next. Select a group to see its entries.</p>
+        </div>
+        <div id="bucketBar" class="bucket-bar"></div>
+        <div id="bucketList" class="bucket-list"></div>
+      </section>
+
+      <div class="two">
+        <section class="plan" aria-labelledby="planTitle">
+          <div class="sec-head">
+            <h2 id="planTitle">Your plan</h2>
+            <p id="planMeta">Written by Nemotron 3 Ultra from the numbers above.</p>
+          </div>
+          <div id="planBody" class="plan-body"><button class="btn ghost" id="planBtn" type="button">Write my plan</button></div>
+        </section>
+        <section class="blockers" aria-labelledby="blockTitle">
+          <div class="sec-head">
+            <h2 id="blockTitle">What could block the money</h2>
+          </div>
+          <ul id="blockerList" class="blocker-list"></ul>
+        </section>
+      </div>
+
+      <section class="entries" aria-labelledby="entriesTitle">
+        <div class="sec-head row">
+          <div>
+            <h2 id="entriesTitle">Entries</h2>
+            <p id="entriesMeta"></p>
+          </div>
+          <div class="entry-tools">
+            <label class="sr" for="entrySearch">Search entries</label>
+            <input id="entrySearch" type="search" placeholder="Search entry number">
+            <button class="chip" id="clearFilter" type="button" hidden>Show all</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table id="entryTable">
+            <thead><tr><th scope="col">Entry</th><th scope="col">What to do</th><th scope="col" class="num">IEEPA duty</th><th scope="col" class="num">Interest</th><th scope="col">Deadline</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <button class="btn ghost" id="moreRows" type="button" hidden>Show more</button>
+      </section>
+
+      <section class="photos" id="photosSec" aria-labelledby="photosTitle" hidden>
+        <div class="sec-head">
+          <h2 id="photosTitle">Read from your photos</h2>
+          <p>Nemotron 3.5 Super VL read these forms. Check each field against the photo; these are estimates until confirmed in ACE.</p>
+        </div>
+        <div id="photoGrid" class="photo-grid"></div>
+      </section>
+
+      <section class="costs" aria-labelledby="costTitle">
+        <div class="sec-head">
+          <h2 id="costTitle">What it should cost to recover</h2>
+          <p id="costMeta"></p>
+        </div>
+        <div class="table-wrap">
+          <table id="costTable">
+            <thead><tr><th scope="col">Option</th><th scope="col">How it's priced</th><th scope="col" class="num">Cost</th><th scope="col" class="num">You keep</th><th scope="col" class="num">Fee share</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="fine">Example prices published by providers in 2026. Compare against a real quote; prices change.</p>
+      </section>
+
+      <section class="offer" aria-labelledby="offerTitle">
+        <div class="sec-head">
+          <h2 id="offerTitle">Got a refund offer? Check it before you answer.</h2>
+          <p>Paste the email or letter. Nemotron 3 Ultra compares it with CBP's fraud warning and prices it on your numbers; Tavily looks the company up.</p>
+        </div>
+        <label class="sr" for="offerText">Offer text</label>
+        <textarea id="offerText" rows="7" placeholder="Paste the offer here"></textarea>
+        <div class="offer-actions">
+          <button class="btn primary" id="offerBtn" type="button">Check this offer</button>
+          <button class="btn ghost" id="offerSample" type="button">Use the sample offer</button>
+        </div>
+        <div id="offerResult" class="offer-result" aria-live="polite"></div>
+      </section>
+
+      <section class="downloads" aria-labelledby="dlTitle">
+        <div class="sec-head">
+          <h2 id="dlTitle">Take it to your broker</h2>
+          <p>Worksheets for you and your licensed broker. You or your broker file in ACE.</p>
+        </div>
+        <div class="dl-row">
+          <a class="dl" id="dlList" href="#"><strong>Entry list for CAPE</strong><span>Pre-checked: format, duplicates, excluded types. Same single column as CBP's template.</span></a>
+          <a class="dl" id="dlSheet" href="#"><strong>Full worksheet</strong><span>Every entry with its route, rule, amounts, deadline and notes.</span></a>
+          <a class="dl" id="dlIcs" href="#"><strong>Deadlines calendar</strong><span>Adds each closing window to your calendar with a 7-day reminder.</span></a>
+        </div>
+      </section>
+
+      <details class="how" id="howBox">
+        <summary>How this was worked out</summary>
+        <div id="howBody"></div>
+      </details>
+    </div>
+  </section>
+</main>
+
+<dialog id="drawer" class="drawer" aria-labelledby="drawerTitle">
+  <form method="dialog" class="drawer-close"><button aria-label="Close">Close</button></form>
+  <div id="drawerBody"></div>
+</dialog>
+
+<footer class="foot">
+  <div class="wrap">
+    <p>RefundRadar is a self-check tool for importers of record reviewing their own entries. It is not a customs broker or law firm and does not file with CBP. Refund requests are filed only in ACE, by you or your licensed customs broker. Estimates only; confirm in ACE.</p>
+    <p>Built for the Nebius × NVIDIA Global AI Hackathon with Nemotron models on Nebius Token Factory and Tavily.</p>
+  </div>
+</footer>
+<script src="/static/app.js"></script>
+</body>
+</html>

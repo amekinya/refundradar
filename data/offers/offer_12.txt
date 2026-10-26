@@ -1,0 +1,9 @@
+Subject: IEEPA refund support
+
+Hello,
+
+We prepare CAPE entry lists for importers at $90 per entry, check each entry's liquidation date, and confirm your ACH refund enrollment before you submit in ACE.
+
+Best regards,
+Meridian Customs Services
+(Fictional example for testing.)
