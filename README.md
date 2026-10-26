@@ -51,7 +51,16 @@ Upload an **ACE ES-003 export** (or any broker spreadsheet) and/or **photos of E
 | Check a refund offer for red flags | **Nemotron 3 Ultra** + **Tavily search** | Reads persuasive letters; web evidence on the company |
 | Rules freshness monitor | **Tavily search** → **Nemotron 3 Nano** | Daily check for CBP/court changes since the rules date |
 
-Token Factory features used: OpenAI-compatible chat completions, strict JSON-schema output, per-request reasoning toggle (`chat_template_kwargs.enable_thinking`), usage accounting for per-step cost, and a daily spend cap. Model IDs are configurable and verified live with `GET /v1/models` (see `scripts/smoke_test.py`).
+Token Factory features used: OpenAI-compatible chat completions, strict JSON-schema output, per-request reasoning toggle (`chat_template_kwargs.enable_thinking`), usage accounting for per-step cost, and a daily spend cap. Rate limits and transient errors are retried, and a reply without valid JSON falls back to the rule-based output. Model IDs are configurable and verified live with `GET /v1/models` (see `scripts/smoke_test.py`).
+
+The freshness check only sends Nemotron news published *after* the rules date; that date comparison is done in code, because Nano listed older articles as "new" when asked to do it. The public demo's sample importer replays recorded live model outputs ([`data/sample/demo_cache.json`](data/sample/demo_cache.json): 14 calls, about $0.04), so visitors don't spend credits; uploads of your own files run live.
+
+## Design
+
+- **The headline is a rounded range, not a false-precision number.** "About $145,300 to $146,800" (rounded to $100), because interest is an estimate and corporate interest rates differ.
+- **Where the money sits** is a sorted bar chart with a three-group overview bar (refund-ready, needs action, not recoverable today): position and length are the most accurately read encodings (Cleveland & McGill 1984; Heer & Bostock 2010).
+- **One alarm color.** Red only ever means money at risk: the HOLD banner, deadlines days away, money leaving the CAPE window, serious blockers, likely-scam offers. Everything else is blue and gray, so red keeps its meaning.
+- Entry numbers are set in IBM Plex Mono so they're easy to read back to a broker. The pages pass an axe-core accessibility audit, including contrast and keyboard access to scrollable tables.
 
 ## Measured results
 
