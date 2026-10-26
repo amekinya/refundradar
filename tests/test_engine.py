@@ -246,3 +246,11 @@ def test_entry_number_repair_uses_check_digit_and_known_filers():
     assert EN.repair("M4M-1898260-9", known) == ("K4M18982609", True)    # K as M
     assert EN.repair("K4M-970955-0", known) == ("K4M9709550", False)     # a dropped digit can't be fixed
     assert EN.repair("Q7Z-9282044-7", known) == ("Q7Z92820447", False)   # already valid
+
+
+def test_one_character_misread_of_your_importer_number_is_still_you():
+    from app.engine.rules import _one_off
+
+    assert _one_off("004417730ZZ", "00441730ZZ")      # a dropped repeated digit
+    assert _one_off("004417730ZZ", "004417730Z2")     # Z read as 2
+    assert not _one_off("007351942AA", "004417730ZZ")  # a different importer

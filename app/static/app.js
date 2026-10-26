@@ -318,7 +318,13 @@
     const mine = (report.profile?.importer_number || "").replace(/[^0-9A-Z]/gi, "").toUpperCase();
     $("#photoGrid").innerHTML = grid.map((p) => {
       const f = p.fields; const theirs = (f.importer_number || "").replace(/[^0-9A-Z]/gi, "").toUpperCase();
-      const other = mine && theirs && mine !== theirs;
+      const oneOff = (a, b) => {  // a one-character misreading from the photo is still you (same rule as the engine)
+        if (a === b || Math.abs(a.length - b.length) > 1) return false;
+        if (a.length === b.length) return [...a].filter((ch, i) => ch !== b[i]).length === 1;
+        const [s, l] = a.length < b.length ? [a, b] : [b, a];
+        return [...l].some((_, i) => l.slice(0, i) + l.slice(i + 1) === s);
+      };
+      const other = mine && theirs && mine !== theirs && !oneOff(mine, theirs);
       const lineTxt = (f.lines || []).map((l) => l.hts_numbers.map((h, i) => `${h} · ${fmt2(l.duties[i] || 0)}`).join("<br>")).join("<br>");
       return `<article class="photo-card">${p.url ? `<img src="${p.url}" alt="Photo of entry summary ${esc(f.entry_number)}" loading="lazy">` : `<div></div>`}
         <div class="form-fields">

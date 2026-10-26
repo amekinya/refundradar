@@ -23,6 +23,16 @@ def _norm_id(s: str) -> str:
     return re.sub(r"[^0-9A-Z]", "", (s or "").upper())
 
 
+def _one_off(a: str, b: str) -> bool:
+    """True if b is a one-character misreading of a (dropped, extra or changed character): photos do that."""
+    if a == b or abs(len(a) - len(b)) > 1:
+        return False
+    if len(a) == len(b):
+        return sum(x != y for x, y in zip(a, b)) == 1
+    short, long_ = sorted((a, b), key=len)
+    return any(long_[:i] + long_[i + 1:] == short for i in range(len(long_)))
+
+
 def _make(entry: Entry, rule_id: str, **kw) -> Route:
     r = C.RULES[rule_id]
     return Route(
@@ -76,7 +86,9 @@ def route_entry(entry: Entry, profile: Profile, today: date) -> Route:
     def finish(r: Route) -> Route:
         # Who holds the claim?
         mine, theirs = _norm_id(profile.importer_number), _norm_id(entry.importer_number)
-        if mine and theirs and mine != theirs:
+        if mine and theirs and _one_off(mine, theirs):
+            r.notes.append(f"The importer number reads {entry.importer_number}, one character off yours; treated as yours. Confirm on the form.")
+        elif mine and theirs and mine != theirs:
             r.holder = "someone_else"
             r.notes.append("The importer of record on this entry isn't you, so the refund belongs to them.")
         if any(c in (entry.importer_name or "").upper() for c in COURIERS):
