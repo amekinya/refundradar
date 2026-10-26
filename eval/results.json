@@ -1,5 +1,5 @@
 {
- "run_at": "2026-10-26 18:57 UTC",
+ "run_at": "2026-10-26 19:04 UTC",
  "routing": {
   "n": 46,
   "systems": {
@@ -84,7 +84,8 @@
      }
     ]
    }
-  }
+  },
+  "reused_from": "2026-10-26 18:57 UTC"
  },
  "routing_run_at": "2026-10-26 18:57 UTC",
  "routing_calls": [
@@ -1022,23 +1023,25 @@
  "forms": {
   "n": 30,
   "field_accuracy": {
-   "entry_number": 0.633,
+   "entry_number": 0.667,
    "entry_type": 1.0,
-   "entry_date": 0.7,
-   "importer_number": 0.933,
+   "entry_date": 1.0,
+   "importer_number": 0.833,
    "chapter99_lines": 1.0,
    "ieepa_duty": 0.9,
-   "total_duty": 1.0
+   "total_duty": 1.0,
+   "entry_number_after_check_digit_repair": 0.767
   },
-  "overall_field_accuracy": 0.881,
-  "photos_fully_correct": 0.3,
+  "overall_field_accuracy": 0.914,
+  "photos_fully_correct": 0.5,
   "by_photo_quality": {
-   "0.2": 0,
-   "0.5": 0.4,
+   "0.2": 0.5,
+   "0.5": 0.5,
    "0.9": 0.5
   },
-  "avg_seconds": 1.82,
-  "cost_usd": 0.0228,
+  "avg_seconds": 1.84,
+  "cost_usd": 0.0235,
+  "wrong_entry_numbers_flagged_for_review": "6/7",
   "rows": [
    {
     "file": "form_00.jpg",
@@ -1046,116 +1049,102 @@
     "all_correct": false,
     "wrong": {
      "entry_number": [
-      "K4M-1380343-1",
+      "K4M-1380431-1",
       "K4M-1383043-1"
-     ],
-     "entry_date": [
-      "05/07/2025",
-      "05/01/2025"
      ]
     },
-    "seconds": 1.97,
-    "cost_usd": 0.00083
+    "seconds": 2.6,
+    "cost_usd": 0.00085
    },
    {
     "file": "form_01.jpg",
     "strength": 0.5,
     "all_correct": true,
     "wrong": {},
-    "seconds": 1.83,
-    "cost_usd": 0.00076
+    "seconds": 1.95,
+    "cost_usd": 0.00078
    },
    {
     "file": "form_02.jpg",
     "strength": 0.9,
-    "all_correct": true,
-    "wrong": {},
-    "seconds": 1.64,
-    "cost_usd": 0.00076
+    "all_correct": false,
+    "wrong": {
+     "entry_number": [
+      "QTZ-3211872-0",
+      "Q7Z-3211872-0"
+     ]
+    },
+    "seconds": 1.72,
+    "cost_usd": 0.00078
    },
    {
     "file": "form_03.jpg",
     "strength": 0.2,
-    "all_correct": false,
-    "wrong": {
-     "entry_date": [
-      "12/18/2025",
-      "12/13/2025"
-     ]
-    },
-    "seconds": 1.76,
-    "cost_usd": 0.00076
+    "all_correct": true,
+    "wrong": {},
+    "seconds": 1.86,
+    "cost_usd": 0.00078
    },
    {
     "file": "form_04.jpg",
     "strength": 0.5,
-    "all_correct": true,
-    "wrong": {},
-    "seconds": 1.61,
-    "cost_usd": 0.00075
+    "all_correct": false,
+    "wrong": {
+     "importer_number": [
+      "00-4417730Z2",
+      "00-4417730ZZ"
+     ]
+    },
+    "seconds": 1.73,
+    "cost_usd": 0.00078
    },
    {
     "file": "form_05.jpg",
     "strength": 0.9,
     "all_correct": true,
     "wrong": {},
-    "seconds": 1.94,
-    "cost_usd": 0.00076
+    "seconds": 1.79,
+    "cost_usd": 0.00078
    },
    {
     "file": "form_06.jpg",
     "strength": 0.2,
-    "all_correct": false,
-    "wrong": {
-     "entry_date": [
-      "08/22/2025",
-      "08/18/2025"
-     ]
-    },
-    "seconds": 1.64,
-    "cost_usd": 0.00075
+    "all_correct": true,
+    "wrong": {},
+    "seconds": 2.2,
+    "cost_usd": 0.00077
    },
    {
     "file": "form_07.jpg",
     "strength": 0.5,
-    "all_correct": false,
-    "wrong": {
-     "entry_date": [
-      "12/30/2025",
-      "12/24/2025"
-     ]
-    },
-    "seconds": 1.76,
-    "cost_usd": 0.00068
+    "all_correct": true,
+    "wrong": {},
+    "seconds": 1.59,
+    "cost_usd": 0.00072
    },
    {
     "file": "form_08.jpg",
     "strength": 0.9,
     "all_correct": true,
     "wrong": {},
-    "seconds": 1.77,
-    "cost_usd": 0.00083
+    "seconds": 1.92,
+    "cost_usd": 0.00085
    },
    {
     "file": "form_09.jpg",
     "strength": 0.2,
-    "all_correct": false,
-    "wrong": {
-     "entry_date": [
-      "10/01/2025",
-      "09/24/2025"
-     ]
-    },
-    "seconds": 1.84,
-    "cost_usd": 0.00076
+    "all_correct": true,
+    "wrong": {},
+    "seconds": 2.0,
+    "cost_usd": 0.00078
    },
    {
     "file": "form_10.jpg",
     "strength": 0.5,
     "all_correct": false,
     "wrong": {},
-    "seconds": 2.05,
-    "cost_usd": 0.00082
+    "seconds": 1.93,
+    "cost_usd": 0.00084
    },
    {
     "file": "form_11.jpg",
@@ -1167,8 +1156,8 @@
       "00-4417730ZZ"
      ]
     },
-    "seconds": 2.01,
-    "cost_usd": 0.00083
+    "seconds": 2.07,
+    "cost_usd": 0.00085
    },
    {
     "file": "form_12.jpg",
@@ -1176,12 +1165,12 @@
     "all_correct": false,
     "wrong": {
      "entry_number": [
-      "K4M-970955-0",
+      "K4M-970595-0",
       "K4M-9705955-0"
      ]
     },
-    "seconds": 1.67,
-    "cost_usd": 0.00076
+    "seconds": 2.11,
+    "cost_usd": 0.00078
    },
    {
     "file": "form_13.jpg",
@@ -1193,21 +1182,16 @@
       "T2R-2236315-9"
      ]
     },
-    "seconds": 1.84,
-    "cost_usd": 0.00075
+    "seconds": 1.72,
+    "cost_usd": 0.00078
    },
    {
     "file": "form_14.jpg",
     "strength": 0.9,
-    "all_correct": false,
-    "wrong": {
-     "entry_number": [
-      "07Z-9282044-7",
-      "Q7Z-9282044-7"
-     ]
-    },
-    "seconds": 1.84,
-    "cost_usd": 0.00076
+    "all_correct": true,
+    "wrong": {},
+    "seconds": 1.62,
+    "cost_usd": 0.00078
    },
    {
     "file": "form_15.jpg",
@@ -1219,29 +1203,24 @@
       "00-4417730ZZ"
      ]
     },
-    "seconds": 1.84,
-    "cost_usd": 0.00068
+    "seconds": 1.59,
+    "cost_usd": 0.0007
    },
    {
     "file": "form_16.jpg",
     "strength": 0.5,
     "all_correct": true,
     "wrong": {},
-    "seconds": 1.63,
-    "cost_usd": 0.00069
+    "seconds": 1.9,
+    "cost_usd": 0.00071
    },
    {
     "file": "form_17.jpg",
     "strength": 0.9,
-    "all_correct": false,
-    "wrong": {
-     "entry_number": [
-      "07Z-2042408-0",
-      "Q7Z-2042408-0"
-     ]
-    },
-    "seconds": 1.82,
-    "cost_usd": 0.00075
+    "all_correct": true,
+    "wrong": {},
+    "seconds": 1.81,
+    "cost_usd": 0.00078
    },
    {
     "file": "form_18.jpg",
@@ -1251,27 +1230,18 @@
      "entry_number": [
       "07Z-1292880-9",
       "Q7Z-1292880-9"
-     ],
-     "entry_date": [
-      "12/03/2025",
-      "11/28/2025"
      ]
     },
-    "seconds": 1.85,
-    "cost_usd": 0.00076
+    "seconds": 1.73,
+    "cost_usd": 0.00078
    },
    {
     "file": "form_19.jpg",
     "strength": 0.5,
-    "all_correct": false,
-    "wrong": {
-     "entry_number": [
-      "07Z-6592136-2",
-      "Q7Z-6592136-2"
-     ]
-    },
-    "seconds": 1.78,
-    "cost_usd": 0.00083
+    "all_correct": true,
+    "wrong": {},
+    "seconds": 1.95,
+    "cost_usd": 0.00085
    },
    {
     "file": "form_20.jpg",
@@ -1283,50 +1253,50 @@
       "K4M-2953968-7"
      ]
     },
-    "seconds": 2.44,
-    "cost_usd": 0.00083
+    "seconds": 1.87,
+    "cost_usd": 0.00085
    },
    {
     "file": "form_21.jpg",
     "strength": 0.2,
-    "all_correct": false,
-    "wrong": {
-     "entry_date": [
-      "10/24/2025",
-      "10/19/2025"
-     ]
-    },
-    "seconds": 1.86,
-    "cost_usd": 0.00068
+    "all_correct": true,
+    "wrong": {},
+    "seconds": 1.69,
+    "cost_usd": 0.00072
    },
    {
     "file": "form_22.jpg",
     "strength": 0.5,
     "all_correct": true,
     "wrong": {},
-    "seconds": 1.67,
-    "cost_usd": 0.00076
+    "seconds": 1.77,
+    "cost_usd": 0.00079
    },
    {
     "file": "form_23.jpg",
     "strength": 0.9,
-    "all_correct": true,
-    "wrong": {},
-    "seconds": 1.7,
-    "cost_usd": 0.00068
+    "all_correct": false,
+    "wrong": {
+     "importer_number": [
+      "00-441730ZZ",
+      "00-4417730ZZ"
+     ]
+    },
+    "seconds": 1.58,
+    "cost_usd": 0.0007
    },
    {
     "file": "form_24.jpg",
     "strength": 0.2,
     "all_correct": false,
     "wrong": {
-     "entry_date": [
-      "10/11/2025",
-      "10/06/2025"
+     "entry_number": [
+      "T2R-375795-3",
+      "T2R-3759759-3"
      ]
     },
-    "seconds": 1.72,
-    "cost_usd": 0.00069
+    "seconds": 1.68,
+    "cost_usd": 0.00071
    },
    {
     "file": "form_25.jpg",
@@ -1334,12 +1304,12 @@
     "all_correct": false,
     "wrong": {
      "entry_number": [
-      "M4M-1898260-9",
+      "M4R-1898260-9",
       "K4M-1898260-9"
      ]
     },
-    "seconds": 1.79,
-    "cost_usd": 0.00082
+    "seconds": 1.88,
+    "cost_usd": 0.00083
    },
    {
     "file": "form_26.jpg",
@@ -1347,25 +1317,20 @@
     "all_correct": false,
     "wrong": {
      "entry_number": [
-      "072-653015-2",
+      "07Z-6523015-2",
       "Q7Z-6523015-2"
      ]
     },
-    "seconds": 1.84,
-    "cost_usd": 0.00075
+    "seconds": 1.72,
+    "cost_usd": 0.00077
    },
    {
     "file": "form_27.jpg",
     "strength": 0.2,
-    "all_correct": false,
-    "wrong": {
-     "entry_date": [
-      "10/08/2025",
-      "10/03/2025"
-     ]
-    },
-    "seconds": 1.83,
-    "cost_usd": 0.00075
+    "all_correct": true,
+    "wrong": {},
+    "seconds": 1.73,
+    "cost_usd": 0.00078
    },
    {
     "file": "form_28.jpg",
@@ -1373,37 +1338,41 @@
     "all_correct": false,
     "wrong": {
      "entry_number": [
-      "072-3954911-7",
+      "07Z-3954911-7",
       "Q7Z-3954911-7"
+     ],
+     "importer_number": [
+      "00-224918AB",
+      "00-2264918AB"
      ]
     },
-    "seconds": 1.84,
-    "cost_usd": 0.00075
+    "seconds": 1.74,
+    "cost_usd": 0.00077
    },
    {
     "file": "form_29.jpg",
     "strength": 0.9,
     "all_correct": true,
     "wrong": {},
-    "seconds": 1.8,
-    "cost_usd": 0.00083
+    "seconds": 1.79,
+    "cost_usd": 0.00085
    }
   ]
  },
  "offers": {
   "n": 20,
   "live": {
-   "verdict_accuracy": 0.45,
-   "scams_caught": "9/10",
-   "legit_flagged_as_scam": "10/10"
+   "verdict_accuracy": 1.0,
+   "scams_caught": "10/10",
+   "legit_flagged_as_scam": "0/10"
   },
   "fallback": {
-   "verdict_accuracy": 0.8,
-   "scams_caught": "8/10",
-   "legit_flagged_as_scam": "1/10"
+   "verdict_accuracy": 0.95,
+   "scams_caught": "10/10",
+   "legit_flagged_as_scam": "0/10"
   },
-  "red_flag_recall": 0.68,
-  "errors": 1,
+  "red_flag_recall": 0.96,
+  "errors": 0,
   "rows": [
    {
     "file": "offer_00.txt",
@@ -1416,11 +1385,11 @@
     "got": "likely_scam",
     "flags_got": [
      "asks_for_ace_login",
-     "claims_to_be_cbp_or_government",
-     "unsolicited_contact"
+     "urgency_pressure"
     ],
     "error": "",
-    "dropped_unquoted": 0,
+    "model_flags_rejected": 1,
+    "fee_pct": 0.0,
     "fallback": "likely_scam"
    },
    {
@@ -1433,10 +1402,13 @@
     ],
     "got": "likely_scam",
     "flags_got": [
-     "asks_for_bank_details"
+     "asks_for_bank_details",
+     "upfront_payment",
+     "urgency_pressure"
     ],
     "error": "",
-    "dropped_unquoted": 0,
+    "model_flags_rejected": 0,
+    "fee_pct": 0.7,
     "fallback": "likely_scam"
    },
    {
@@ -1448,11 +1420,12 @@
     ],
     "got": "likely_scam",
     "flags_got": [
-     "unsolicited_contact",
+     "qr_code_or_link_to_pay",
      "urgency_pressure"
     ],
     "error": "",
-    "dropped_unquoted": 0,
+    "model_flags_rejected": 7,
+    "fee_pct": 0.0,
     "fallback": "likely_scam"
    },
    {
@@ -1470,7 +1443,8 @@
      "upfront_payment"
     ],
     "error": "",
-    "dropped_unquoted": 0,
+    "model_flags_rejected": 2,
+    "fee_pct": 36.5,
     "fallback": "likely_scam"
    },
    {
@@ -1482,14 +1456,12 @@
     ],
     "got": "likely_scam",
     "flags_got": [
-     "asks_for_ace_login",
      "asks_for_bank_details",
-     "claims_to_be_cbp_or_government",
-     "processes_refunds_outside_ace",
-     "unsolicited_contact"
+     "claims_to_be_cbp_or_government"
     ],
     "error": "",
-    "dropped_unquoted": 0,
+    "model_flags_rejected": 2,
+    "fee_pct": 0.0,
     "fallback": "likely_scam"
    },
    {
@@ -1502,12 +1474,11 @@
     "got": "likely_scam",
     "flags_got": [
      "asks_for_ace_login",
-     "unsolicited_contact",
-     "upfront_payment",
      "urgency_pressure"
     ],
     "error": "",
-    "dropped_unquoted": 0,
+    "model_flags_rejected": 1,
+    "fee_pct": 40.0,
     "fallback": "likely_scam"
    },
    {
@@ -1519,14 +1490,13 @@
     ],
     "got": "likely_scam",
     "flags_got": [
-     "asks_for_ace_login",
      "asks_for_bank_details",
-     "claims_to_be_cbp_or_government",
-     "unsolicited_contact"
+     "qr_code_or_link_to_pay"
     ],
     "error": "",
-    "dropped_unquoted": 1,
-    "fallback": "reasonable"
+    "model_flags_rejected": 11,
+    "fee_pct": 0.0,
+    "fallback": "likely_scam"
    },
    {
     "file": "offer_07.txt",
@@ -1536,11 +1506,16 @@
      "guarantees_refund",
      "processes_refunds_outside_ace"
     ],
-    "got": "ERR",
-    "flags_got": [],
-    "error": "LiveModelUnavailable: nvidia/Nemotron-3-Ultra-550b-a55b returned no valid JSON",
-    "dropped_unquoted": 0,
-    "fallback": "reasonable"
+    "got": "likely_scam",
+    "flags_got": [
+     "guarantees_refund",
+     "processes_refunds_outside_ace",
+     "upfront_payment"
+    ],
+    "error": "",
+    "model_flags_rejected": 1,
+    "fee_pct": 2.4,
+    "fallback": "likely_scam"
    },
    {
     "file": "offer_08.txt",
@@ -1551,12 +1526,12 @@
     ],
     "got": "likely_scam",
     "flags_got": [
-     "unsolicited_contact",
      "upfront_payment",
      "urgency_pressure"
     ],
     "error": "",
-    "dropped_unquoted": 0,
+    "model_flags_rejected": 0,
+    "fee_pct": 1.0,
     "fallback": "likely_scam"
    },
    {
@@ -1571,149 +1546,121 @@
     "flags_got": [
      "asks_for_ace_login",
      "claims_to_be_cbp_or_government",
-     "guarantees_refund",
-     "upfront_payment"
+     "guarantees_refund"
     ],
     "error": "",
-    "dropped_unquoted": 0,
+    "model_flags_rejected": 1,
+    "fee_pct": 30.0,
     "fallback": "likely_scam"
    },
    {
     "file": "offer_10.txt",
     "expected": "reasonable",
     "flags_expected": [],
-    "got": "likely_scam",
-    "flags_got": [
-     "claims_to_be_cbp_or_government",
-     "unsolicited_contact",
-     "upfront_payment"
-    ],
+    "got": "reasonable",
+    "flags_got": [],
     "error": "",
-    "dropped_unquoted": 0,
-    "fallback": "likely_scam"
+    "model_flags_rejected": 0,
+    "fee_pct": 9.3,
+    "fallback": "reasonable"
    },
    {
     "file": "offer_11.txt",
     "expected": "reasonable",
     "flags_expected": [],
-    "got": "likely_scam",
-    "flags_got": [
-     "claims_to_be_cbp_or_government",
-     "unsolicited_contact"
-    ],
+    "got": "reasonable",
+    "flags_got": [],
     "error": "",
-    "dropped_unquoted": 6,
+    "model_flags_rejected": 0,
+    "fee_pct": 15.0,
     "fallback": "reasonable"
    },
    {
     "file": "offer_12.txt",
     "expected": "reasonable",
     "flags_expected": [],
-    "got": "likely_scam",
-    "flags_got": [
-     "unsolicited_contact",
-     "upfront_payment"
-    ],
+    "got": "reasonable",
+    "flags_got": [],
     "error": "",
-    "dropped_unquoted": 0,
+    "model_flags_rejected": 0,
+    "fee_pct": 5.6,
     "fallback": "reasonable"
    },
    {
     "file": "offer_13.txt",
     "expected": "reasonable",
     "flags_expected": [],
-    "got": "likely_scam",
-    "flags_got": [
-     "asks_for_ace_login"
-    ],
+    "got": "reasonable",
+    "flags_got": [],
     "error": "",
-    "dropped_unquoted": 2,
+    "model_flags_rejected": 0,
+    "fee_pct": 12.4,
     "fallback": "reasonable"
    },
    {
     "file": "offer_14.txt",
     "expected": "reasonable",
     "flags_expected": [],
-    "got": "likely_scam",
-    "flags_got": [
-     "claims_to_be_cbp_or_government",
-     "unsolicited_contact",
-     "upfront_payment"
-    ],
+    "got": "reasonable",
+    "flags_got": [],
     "error": "",
-    "dropped_unquoted": 6,
+    "model_flags_rejected": 0,
+    "fee_pct": 0.9,
     "fallback": "reasonable"
    },
    {
     "file": "offer_15.txt",
     "expected": "expensive",
     "flags_expected": [],
-    "got": "likely_scam",
-    "flags_got": [
-     "unsolicited_contact",
-     "upfront_payment"
-    ],
+    "got": "expensive",
+    "flags_got": [],
     "error": "",
-    "dropped_unquoted": 0,
+    "model_flags_rejected": 0,
+    "fee_pct": 40.0,
     "fallback": "expensive"
    },
    {
     "file": "offer_16.txt",
     "expected": "expensive",
     "flags_expected": [],
-    "got": "likely_scam",
-    "flags_got": [
-     "asks_for_ace_login",
-     "asks_for_bank_details",
-     "claims_to_be_cbp_or_government",
-     "guarantees_refund",
-     "unsolicited_contact",
-     "upfront_payment"
-    ],
+    "got": "expensive",
+    "flags_got": [],
     "error": "",
-    "dropped_unquoted": 2,
+    "model_flags_rejected": 3,
+    "fee_pct": 28.0,
     "fallback": "expensive"
    },
    {
     "file": "offer_17.txt",
     "expected": "expensive",
     "flags_expected": [],
-    "got": "likely_scam",
-    "flags_got": [
-     "asks_for_ace_login",
-     "guarantees_refund",
-     "unsolicited_contact",
-     "upfront_payment"
-    ],
+    "got": "expensive",
+    "flags_got": [],
     "error": "",
-    "dropped_unquoted": 0,
+    "model_flags_rejected": 0,
+    "fee_pct": 20.0,
     "fallback": "reasonable"
    },
    {
     "file": "offer_18.txt",
     "expected": "reasonable",
     "flags_expected": [],
-    "got": "likely_scam",
-    "flags_got": [
-     "guarantees_refund",
-     "unsolicited_contact",
-     "upfront_payment"
-    ],
+    "got": "reasonable",
+    "flags_got": [],
     "error": "",
-    "dropped_unquoted": 0,
+    "model_flags_rejected": 0,
+    "fee_pct": 7.9,
     "fallback": "reasonable"
    },
    {
     "file": "offer_19.txt",
     "expected": "reasonable",
     "flags_expected": [],
-    "got": "likely_scam",
-    "flags_got": [
-     "unsolicited_contact",
-     "upfront_payment"
-    ],
+    "got": "reasonable",
+    "flags_got": [],
     "error": "",
-    "dropped_unquoted": 0,
+    "model_flags_rejected": 0,
+    "fee_pct": 0.0,
     "fallback": "reasonable"
    }
   ]
@@ -1730,18 +1677,18 @@
   "super_vl": {
    "model": "nvidia/Nemotron-3.5-Super-VL",
    "calls": 30,
-   "avg_seconds": 1.82,
-   "avg_tokens_in": 1607,
-   "avg_tokens_out": 308,
-   "cost_usd": 0.0228
+   "avg_seconds": 1.84,
+   "avg_tokens_in": 1676,
+   "avg_tokens_out": 310,
+   "cost_usd": 0.0235
   },
   "ultra": {
    "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-   "calls": 68,
-   "avg_seconds": 5.93,
-   "avg_tokens_in": 1306,
-   "avg_tokens_out": 1809,
-   "cost_usd": 0.458
+   "calls": 66,
+   "avg_seconds": 4.49,
+   "avg_tokens_in": 1344,
+   "avg_tokens_out": 1375,
+   "cost_usd": 0.3611
   }
  }
 }
