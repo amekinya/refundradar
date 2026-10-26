@@ -251,10 +251,9 @@ OFFER_SCHEMA = {
             },
         },
         "green_flags": {"type": "array", "items": {"type": "string"}},
-        "verdict": {"type": "string", "enum": ["likely_scam", "expensive", "reasonable", "unclear"]},
         "advice": {"type": "string"},
     },
-    "required": ["company_name", "fee_percent", "fee_flat", "fee_per_entry", "fee_minimum", "red_flags", "green_flags", "verdict", "advice"],
+    "required": ["company_name", "fee_percent", "fee_flat", "fee_per_entry", "fee_minimum", "red_flags", "green_flags", "advice"],
     "additionalProperties": False,
 }
 
@@ -275,17 +274,52 @@ def _tavily_company_check(company: str) -> list[dict]:
     return [{"title": r.get("title", ""), "url": r.get("url", ""), "snippet": (r.get("content") or "")[:400]} for r in res.get("results", [])]
 
 
+HARD_FLAGS = {"asks_for_ace_login", "asks_for_bank_details", "claims_to_be_cbp_or_government", "upfront_payment",
+              "processes_refunds_outside_ace", "qr_code_or_link_to_pay"}  # each is something CBP says a legitimate filer never does
+EXPENSIVE_PCT = 20.0  # contingency firms we found charge 20-35%; licensed brokers charge flat fees of roughly $100-200 per declaration
+_NEGATION = re.compile(r"\b(never|no|not|without|don't|doesn't|won't)\b")
+
+
+def _quoted(evidence: str, text: str) -> bool:
+    """The flag's evidence must actually be in the offer (whitespace and case ignored) and must not be a negation
+    ('we never need your login' is a green flag, not a red one)."""
+    norm = lambda x: re.sub(r"\s+", " ", x.lower()).strip(" .\"'")  # noqa: E731
+    e = norm(evidence)
+    return len(e) >= 8 and e in norm(text) and not _NEGATION.search(e)
+
+
+def offer_verdict(flags: list[dict], effective_pct: float, priced: bool) -> str:
+    """Code decides the verdict from the checked flags and the offer's cost on the user's own numbers."""
+    names = {f["flag"] for f in flags}
+    if names & HARD_FLAGS or len(names - HARD_FLAGS - {"other"}) >= 2:
+        return "likely_scam"
+    if priced and effective_pct >= EXPENSIVE_PCT:
+        return "expensive"
+    return "reasonable"
+
+
 def offer_check(offer_text: str, refund_estimate: float, entries: int, calls: list[CallRecord] | None = None) -> dict:
     first = chat_json(
         settings.ultra,
-        [{"role": "system", "content": "You analyze refund-recovery offers sent to small US importers. Be precise and fair; quote evidence from the offer."},
-         {"role": "user", "content": f"{CBP_FRAUD_GUIDANCE}\n\nOffer text:\n\"\"\"\n{offer_text[:6000]}\n\"\"\"\n\nExtract the fee terms and red/green flags."}],
+        [{"role": "system", "content": "You analyze refund-recovery offers sent to small US importers. Be precise and fair. "
+                                      "List a red flag only when the offer itself does that thing, and quote the exact words as evidence. "
+                                      "Statements that the sender does NOT do something (e.g. 'we never ask for passwords') are green flags."},
+         {"role": "user", "content": f"{CBP_FRAUD_GUIDANCE}\n\nOffer text:\n\"\"\"\n{offer_text[:6000]}\n\"\"\"\n\n"
+                                     "Extract the fee terms (0 when not stated) and the red and green flags. "
+                                     "advice: one or two sentences on what to ask or check before replying; don't give a verdict."}],
         schema=OFFER_SCHEMA, purpose="Check refund offer", reasoning=True, max_tokens=4000, calls=calls,
     )
-    web = _tavily_company_check(first.get("company_name", ""))
+    checked = [f for f in first.get("red_flags", []) if _quoted(f.get("evidence", ""), offer_text)]
+    dropped = len(first.get("red_flags", [])) - len(checked)
+    try:
+        web = _tavily_company_check(first.get("company_name", ""))
+    except Exception:  # noqa: BLE001  (the web lookup is extra evidence, never a reason to fail the check)
+        web = []
+    priced = any(first.get(k) for k in ("fee_percent", "fee_flat", "fee_per_entry", "fee_minimum"))
     fee, pct = offer_cost(refund_estimate, percent=first["fee_percent"] or None, flat=first["fee_flat"] or None,
                           per_entry=first["fee_per_entry"] or None, entries=entries, minimum=first["fee_minimum"] or None)
-    return {**first, "cost_on_your_numbers": fee, "effective_pct": pct, "web_results": web}
+    return {**first, "red_flags": checked, "unquoted_flags_dropped": dropped, "verdict": offer_verdict(checked, pct, priced),
+            "cost_on_your_numbers": fee, "effective_pct": pct, "web_results": web}
 
 
 SCAM_PATTERNS = {
@@ -301,14 +335,19 @@ SCAM_PATTERNS = {
 
 def offer_check_fallback(offer_text: str, refund_estimate: float, entries: int) -> dict:
     t = offer_text.lower()
-    flags = [{"flag": k, "evidence": (re.search(p, t).group(0) if re.search(p, t) else "")} for k, p in SCAM_PATTERNS.items() if re.search(p, t)]
+    flags = []
+    for k, p in SCAM_PATTERNS.items():
+        for m in re.finditer(p, t):
+            sentence_start = max(t.rfind(".", 0, m.start()), t.rfind("\n", 0, m.start())) + 1
+            if not _NEGATION.search(t[sentence_start : m.start()]):  # "we never ask for your bank details" is not a red flag
+                flags.append({"flag": k, "evidence": m.group(0)})
+                break
     m = re.search(r"(\d{1,2}(?:\.\d+)?)\s*%", t)
     pct_in = float(m.group(1)) if m else None
     flat = re.search(r"\$\s?([\d,]+(?:\.\d\d)?)\s*(?:one-time\s+)?(?:processing|activation|setup|filing|upfront)?\s*fee", t)
     flat_v = float(flat.group(1).replace(",", "")) if flat else None
     fee, pct = offer_cost(refund_estimate, percent=pct_in, flat=flat_v)
-    verdict = "likely_scam" if any(f["flag"] in {"asks_for_ace_login", "asks_for_bank_details", "claims_to_be_cbp_or_government", "upfront_payment"} for f in flags) \
-        else ("expensive" if (pct_in or 0) >= 15 else "unclear")
+    verdict = offer_verdict(flags, pct, bool(pct_in or flat_v))
     return {"company_name": "", "fee_percent": pct_in or 0, "fee_flat": 0, "fee_per_entry": 0, "fee_minimum": 0, "red_flags": flags,
             "green_flags": [], "verdict": verdict, "advice": CBP_FRAUD_GUIDANCE,
             "cost_on_your_numbers": fee, "effective_pct": pct, "web_results": [], "fallback": True}

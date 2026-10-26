@@ -14,6 +14,8 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+from dataclasses import asdict
+import re
 import random
 import statistics
 import time
@@ -128,11 +130,12 @@ def forms() -> dict:
         except Exception as ex:
             got = {}
         calls.extend(local)
+        alnum = lambda x: re.sub(r"[^A-Z0-9]", "", str(x or "").upper())  # noqa: E731  (dashes/spaces are formatting, not reading)
         checks = {
-            "entry_number": got.get("entry_number", "").replace(" ", "") == truth["entry_number"],
+            "entry_number": alnum(got.get("entry_number")) == alnum(truth["entry_number"]),
             "entry_type": got.get("entry_type", "") == truth["entry_type"],
-            "entry_date": got.get("entry_date", "") == truth["entry_date"],
-            "importer_number": got.get("importer_number", "").replace(" ", "") == truth["importer_number"],
+            "entry_date": _iso(got.get("entry_date", "")) == _iso(truth["entry_date"]),
+            "importer_number": alnum(got.get("importer_number")) == alnum(truth["importer_number"]),
             "chapter99_lines": sorted(h for l in got.get("lines", []) for h in l.get("hts_numbers", []) if h.startswith("9903"))
                                == sorted(h for l in truth["lines"] for h in l["hts_numbers"] if h.startswith("9903")),
             "ieepa_duty": abs(sum(d for l in got.get("lines", []) for h, d in zip(l.get("hts_numbers", []), l.get("duties", [])) if h.startswith("9903"))
@@ -141,7 +144,8 @@ def forms() -> dict:
         }
         for k, v in checks.items():
             fields[k][0] += v; fields[k][1] += 1
-        per_photo.append({"file": f.name, "strength": truth["photo_strength"], "all_correct": all(checks.values()),
+        wrong = {k: [str(got.get(k, ""))[:40], str(truth.get(k, ""))[:40]] for k, v in checks.items() if not v and k in truth}
+        per_photo.append({"file": f.name, "strength": truth["photo_strength"], "all_correct": all(checks.values()), "wrong": wrong,
                           "seconds": round(sum(c.seconds for c in local), 2), "cost_usd": round(sum(c.cost_usd for c in local), 5)})
     total_fields = sum(v[1] for v in fields.values())
     return {"n": len(files), "field_accuracy": {k: round(a / b, 3) for k, (a, b) in fields.items()},
@@ -150,32 +154,49 @@ def forms() -> dict:
             "by_photo_quality": {s: round(statistics.mean(p["all_correct"] for p in per_photo if p["strength"] == s), 3)
                                  for s in sorted({p["strength"] for p in per_photo})},
             "avg_seconds": round(statistics.mean(p["seconds"] for p in per_photo), 2) if per_photo else 0,
-            "cost_usd": round(sum(p["cost_usd"] for p in per_photo), 4)}
+            "cost_usd": round(sum(p["cost_usd"] for p in per_photo), 4), "rows": per_photo}
+
+
+def _iso(d: str) -> str:
+    """MM/DD/YYYY, YYYY-MM-DD or MM-DD-YYYY -> YYYY-MM-DD (format differences aren't reading errors)."""
+    d = str(d or "").strip()
+    m = re.fullmatch(r"(\d{1,2})[/-](\d{1,2})[/-](\d{4})", d)
+    if m:
+        return f"{m[3]}-{int(m[1]):02d}-{int(m[2]):02d}"
+    m = re.fullmatch(r"(\d{4})-(\d{1,2})-(\d{1,2})", d)
+    return f"{m[1]}-{int(m[2]):02d}-{int(m[3]):02d}" if m else d
 
 
 def offers() -> dict:
+    """Live check (Nemotron 3 Ultra reads the offer, code decides) vs. the no-model fallback (regex flags, same verdict rule)."""
     labels = json.loads((ROOT / "data/offers/labels.json").read_text())
-    ok, scam_caught, scam_n, legit_false_alarm, legit_n, flag_hits, flag_n = 0, 0, 0, 0, 0, 0, 0
     rows = []
     for lab in labels:
         text = (ROOT / "data/offers" / lab["file"]).read_text()
         local: list[CallRecord] = []
         try:
             r = tasks.offer_check(text, 50_000, 30, local)
-        except Exception:
-            r = {"verdict": "ERR", "red_flags": []}
+            err = ""
+        except Exception as e:  # noqa: BLE001
+            r, err = {"verdict": "ERR", "red_flags": []}, f"{type(e).__name__}: {str(e)[:120]}"
         calls.extend(local)
-        v = r.get("verdict")
-        ok += v == lab["label"]
-        if lab["label"] == "likely_scam":
-            scam_n += 1; scam_caught += v == "likely_scam"
-            got = {f["flag"] for f in r.get("red_flags", [])}
-            flag_hits += len(got & set(lab["flags"])); flag_n += len(lab["flags"])
-        else:
-            legit_n += 1; legit_false_alarm += v == "likely_scam"
-        rows.append({"file": lab["file"], "expected": lab["label"], "got": v})
-    return {"n": len(labels), "verdict_accuracy": round(ok / len(labels), 3), "scams_caught": f"{scam_caught}/{scam_n}",
-            "legit_flagged_as_scam": f"{legit_false_alarm}/{legit_n}", "red_flag_recall": round(flag_hits / max(flag_n, 1), 3), "rows": rows}
+        fb = tasks.offer_check_fallback(text, 50_000, 30)
+        rows.append({"file": lab["file"], "expected": lab["label"], "flags_expected": lab["flags"],
+                     "got": r.get("verdict"), "flags_got": sorted({f["flag"] for f in r.get("red_flags", [])}), "error": err,
+                     "dropped_unquoted": r.get("unquoted_flags_dropped", 0), "fallback": fb["verdict"]})
+
+    def score(key: str) -> dict:
+        n = len(rows)
+        scams = [x for x in rows if x["expected"] == "likely_scam"]
+        legit = [x for x in rows if x["expected"] != "likely_scam"]
+        return {"verdict_accuracy": round(sum(x[key] == x["expected"] for x in rows) / n, 3),
+                "scams_caught": f"{sum(x[key] == 'likely_scam' for x in scams)}/{len(scams)}",
+                "legit_flagged_as_scam": f"{sum(x[key] == 'likely_scam' for x in legit)}/{len(legit)}"}
+
+    flag_n = sum(len(x["flags_expected"]) for x in rows)
+    flag_hits = sum(len(set(x["flags_expected"]) & set(x["flags_got"])) for x in rows)
+    return {"n": len(rows), "live": score("got"), "fallback": score("fallback"), "red_flag_recall": round(flag_hits / max(flag_n, 1), 3),
+            "errors": sum(bool(x["error"]) for x in rows), "rows": rows}
 
 
 def tiers() -> dict:
@@ -194,8 +215,17 @@ def main():
     ap.add_argument("--routing-n", type=int, default=57)
     ap.add_argument("--skip-offers", action="store_true")
     ap.add_argument("--skip-forms", action="store_true")
+    ap.add_argument("--reuse-routing", action="store_true", help="keep the routing results already in eval/results.json")
     a = ap.parse_args()
-    res = {"run_at": time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime()), "routing": routing(a.routing_n)}
+    prev = json.loads((ROOT / "eval/results.json").read_text()) if (ROOT / "eval/results.json").exists() else {}
+    if a.reuse_routing and "routing" in prev:
+        calls.extend(CallRecord(**c) for c in prev.get("routing_calls", []))
+        routing_res = prev["routing"] | {"reused_from": prev.get("routing_run_at", prev.get("run_at"))}
+    else:
+        routing_res = routing(a.routing_n)
+    res = {"run_at": time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime()), "routing": routing_res,
+           "routing_run_at": routing_res.get("reused_from", time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime()))}
+    res["routing_calls"] = [asdict(c) for c in calls]  # so a later run that reuses routing still reports its cost per tier
     if not a.skip_forms:
         res["forms"] = forms()
     if not a.skip_offers:
@@ -208,7 +238,7 @@ def main():
 
 def render_md(r: dict) -> str:
     L = [f"# RefundRadar benchmark results\n\nRun {r['run_at']}. Synthetic data only (invented importer, fake identifiers).\n",
-         f"## 1. Routing {r['routing']['n']} entries (stratified across all rule paths)\n",
+         f"## 1. Routing {r['routing']['n']} entries (stratified across all rule paths; run {r.get('routing_run_at', r['run_at'])})\n",
          "| System | Right route | Right rule | Exact deadline | Time | Cost |", "|---|---|---|---|---|---|"]
     for name, s in r["routing"]["systems"].items():
         L.append(f"| {name} | {s['route_accuracy']:.0%} | {s['rule_accuracy']:.0%} | {s['deadline_exact']:.0%} | {s['seconds_total']}s | ${s['cost_usd']:.3f} |")
@@ -220,7 +250,12 @@ def render_md(r: dict) -> str:
               + ", ".join(f"{k}: {v:.0%}" for k, v in f["by_photo_quality"].items()) + f". Avg {f['avg_seconds']}s per photo, total ${f['cost_usd']:.3f}."]
     if "offers" in r:
         o = r["offers"]
-        L += [f"\n## 3. Offer check ({o['n']} offers)\n", f"Verdict accuracy {o['verdict_accuracy']:.0%}; scams caught {o['scams_caught']}; legitimate offers wrongly flagged {o['legit_flagged_as_scam']}; red-flag recall {o['red_flag_recall']:.0%}."]
+        L += [f"\n## 3. Offer check ({o['n']} offers: 10 scams, 10 legitimate)\n",
+              "Both rows use the same code rule for the verdict; they differ in who reads the offer.\n",
+              "| Reader | Right verdict | Scams caught | Legitimate offers flagged as scams |", "|---|---|---|---|",
+              f"| Nemotron 3 Ultra (flags must quote the offer) | {o['live']['verdict_accuracy']:.0%} | {o['live']['scams_caught']} | {o['live']['legit_flagged_as_scam']} |",
+              f"| Keyword rules only (no model) | {o['fallback']['verdict_accuracy']:.0%} | {o['fallback']['scams_caught']} | {o['fallback']['legit_flagged_as_scam']} |",
+              f"\nRed-flag recall (Ultra): {o['red_flag_recall']:.0%}. Errors: {o['errors']}."]
     L += ["\n## 4. Cost and latency by model tier\n", "| Tier | Model | Calls | Avg seconds | Avg tokens in/out | Cost |", "|---|---|---|---|---|---|"]
     L += [f"| {k} | {v['model']} | {v['calls']} | {v['avg_seconds']} | {v['avg_tokens_in']}/{v['avg_tokens_out']} | ${v['cost_usd']:.3f} |" for k, v in r["tiers"].items()]
     return "\n".join(L) + "\n"
