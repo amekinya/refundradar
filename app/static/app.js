@@ -407,7 +407,7 @@
     else if (f.checked) { b.classList.add("ok"); b.textContent = "Rules checked today"; }
     b.addEventListener("click", () => {
       $("#drawerBody").innerHTML = `<h3>Is the rule set current?</h3>
-        <p>Our routing rules were verified against CBP and court sources on ${dateFmt(f.rules_verified_as_of)}. ${f.checked ? "Today Tavily searched recent news and Nemotron Nano checked it for changes." : "Live checking isn't available right now."}</p>
+        <p>Our routing rules were verified against CBP and court sources on ${dateFmt(f.rules_verified_as_of)}. ${f.checked ? "Today Tavily searched recent news and Nemotron 3.5 Lightning checked anything newer than that date." : "Live checking isn't available right now."}</p>
         ${f.items?.length ? `<ul>${f.items.map((i) => `<li><a href="${esc(i.url)}" target="_blank" rel="noopener">${esc(i.what)}</a> <small>${esc(i.date)}</small></li>`).join("")}</ul>` : f.checked ? "<p>No changes found since then.</p>" : ""}
         <p class="src">Pending: CBP status report (Oct 26), settlement conference (Oct 27), class scheduling order (Nov 5), Federal Circuit appeal.</p>`;
       $("#drawer").showModal();

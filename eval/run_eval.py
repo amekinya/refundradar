@@ -85,7 +85,7 @@ def routing(n: int) -> dict:
     res = [route_entry(e, profile, TODAY) for e in sample]
     eng_s = time.perf_counter() - t0
     out["systems"]["Rule engine"] = _score(sample, labels, [(r.rule_id, r.bucket, str(r.deadline) if r.deadline else "") for r in res], eng_s, 0.0)
-    for name, spec, think in (("Nemotron 3 Ultra (model only)", settings.ultra, True), ("Nemotron 3 Nano (model only)", settings.nano, True)):
+    for name, spec, think in (("Nemotron 3 Ultra (model only)", settings.ultra, True), ("Nemotron 3.5 Lightning (model only)", settings.nano, True)):
         preds, cost, secs = [], 0.0, 0.0
         for e in sample:
             local: list[CallRecord] = []

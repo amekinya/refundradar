@@ -2,7 +2,7 @@
 
 Column names follow the published ES-003 headers (Flexport/Gaia/GingerControl docs). Optional extra
 columns (protest, drawback, surety, importer number...) are accepted so a broker or the user can add
-status the ES-003 doesn't carry. Unknown headers can be mapped by the model layer (Nemotron Nano)
+status the ES-003 doesn't carry. Unknown headers can be mapped by the model layer (Nemotron 3.5 Lightning)
 and passed in as `header_map`.
 """
 from __future__ import annotations

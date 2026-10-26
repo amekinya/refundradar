@@ -45,11 +45,11 @@ Upload an **ACE ES-003 export** (or any broker spreadsheet) and/or **photos of E
 | Job | Model on Token Factory | Why this tier |
 |---|---|---|
 | Read photos of Form 7501 into a review grid (strict JSON schema) | **Nemotron 3.5 Super VL** | Vision + reliable structured output |
-| Map an unfamiliar broker spreadsheet to our schema | **Nemotron 3 Nano** (reasoning off) | Fast, near-free, one call per file |
+| Map an unfamiliar broker spreadsheet to our schema | **Nemotron 3.5 Lightning** (reasoning off) | Fast, near-free, one call per file (replaced Nemotron 3 Nano, which Token Factory retires on Nov 9, 2026) |
 | Write the action plan over the whole ledger | **Nemotron 3 Ultra** (reasoning on) | Long context: all totals, blockers, deadlines and unusual entries plus the full rule set in one prompt |
 | Explain an unusual entry in plain English | **Nemotron 3 Ultra** | Reasoning grounded in the rule text |
 | Check a refund offer for red flags | **Nemotron 3 Ultra** + **Tavily search** | Reads persuasive letters; web evidence on the company |
-| Rules freshness monitor | **Tavily search** → **Nemotron 3 Nano** | Daily check for CBP/court changes since the rules date |
+| Rules freshness monitor | **Tavily search** → **Nemotron 3.5 Lightning** | Daily check for CBP/court changes since the rules date |
 
 Token Factory features used: OpenAI-compatible chat completions, strict JSON-schema output, per-request reasoning toggle (`chat_template_kwargs.enable_thinking`), usage accounting for per-step cost, and a daily spend cap. Rate limits and transient errors are retried, and a reply without valid JSON falls back to the rule-based output. Model IDs are configurable and verified live with `GET /v1/models` (see `scripts/smoke_test.py`).
 

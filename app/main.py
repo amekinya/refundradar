@@ -131,7 +131,7 @@ async def analyze_upload(
                 rows = list(_csv.DictReader(_io.StringIO(text)))[:3]
                 mapping = tasks.map_headers(info["headers"], rows, calls)
                 parsed, info = parse_csv(text, header_map=mapping)
-                step.update(detail=f"Unfamiliar columns mapped by Nemotron Nano ({len(mapping)} fields)", model=settings.nano.model_id)
+                step.update(detail=f"Unfamiliar columns mapped by Nemotron 3.5 Lightning ({len(mapping)} fields)", model=settings.nano.model_id)
             except LiveModelUnavailable:
                 raise HTTPException(422, f"Couldn't find these columns: {', '.join(info['missing'])}. Use an ACE ES-003 export.")
             if info["missing"]:

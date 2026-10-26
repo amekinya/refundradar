@@ -1,11 +1,11 @@
 """Where the NVIDIA models do work code can't. Every function has a no-key fallback so the app always runs.
 
-- map_headers   Nemotron 3 Nano   (fast, no reasoning): map an unfamiliar spreadsheet to our fields
+- map_headers   Nemotron 3.5 Lightning (fast, no reasoning): map an unfamiliar spreadsheet to our fields
 - read_form     Nemotron 3.5 Super VL (vision, strict JSON): photo/PDF page of a Form 7501 -> review grid
 - action_plan   Nemotron 3 Ultra  (reasoning, long context): the whole ledger + rules -> prioritized plan
 - explain_entry Nemotron 3 Ultra  (reasoning): why an unusual entry routes the way it does
 - offer_check   Nemotron 3 Ultra + Tavily: is this refund offer predatory or a scam, and what would it cost?
-- freshness     Tavily + Nemotron 3 Nano: has CBP/court guidance changed since our rules date?
+- freshness     Tavily + Nemotron 3.5 Lightning: has CBP/court guidance changed since our rules date?
 
 Money, dates and routes are never taken from a model: models get engine outputs as facts.
 """
