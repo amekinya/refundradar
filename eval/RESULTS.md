@@ -1,6 +1,6 @@
 # RefundRadar benchmark results
 
-Run 2026-10-26 19:04 UTC. Synthetic data only (invented importer, fake identifiers).
+Run 2026-10-26 19:07 UTC. Synthetic data only (invented importer, fake identifiers).
 
 ## 1. Routing 46 entries (stratified across all rule paths; run 2026-10-26 18:57 UTC)
 
@@ -21,11 +21,11 @@ Run 2026-10-26 19:04 UTC. Synthetic data only (invented importer, fake identifie
 | chapter99_lines | 100% |
 | ieepa_duty | 90% |
 | total_duty | 100% |
-| entry_number_after_check_digit_repair | 77% |
+| entry_number_after_check_digit | 83% |
 
-Entry numbers still wrong after the check-digit repair that fail validation, so the app flags them for review: 6/7.
+`entry_number_after_check_digit`: when the reading fails the CBP check digit, code tries look-alike characters against the importer's known filer codes, then asks Super VL (reasoning on) to re-read Block 1 once. Entry numbers still wrong that fail validation, so the app flags them for review: 4/5.
 
-All fields correct on 50% of photos; by photo quality (light/medium/heavy distortion): 0.2: 50%, 0.5: 50%, 0.9: 50%. Avg 1.84s per photo, total $0.024.
+All fields correct on 50% of photos; by photo quality (light/medium/heavy distortion): 0.2: 50%, 0.5: 50%, 0.9: 50%. Avg 2.78s per photo, total $0.035.
 
 ## 3. Offer check (20 offers: 10 scams, 10 legitimate)
 
@@ -43,5 +43,5 @@ Red-flag recall: 96%. Model-proposed flags rejected by code: 29. Errors: 0.
 | Tier | Model | Calls | Avg seconds | Avg tokens in/out | Cost |
 |---|---|---|---|---|---|
 | nano | nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B | 47 | 6.87 | 1800/1834 | $0.026 |
-| super_vl | nvidia/Nemotron-3.5-Super-VL | 30 | 1.84 | 1676/310 | $0.024 |
-| ultra | nvidia/Nemotron-3-Ultra-550b-a55b | 66 | 4.49 | 1344/1375 | $0.361 |
+| super_vl | nvidia/Nemotron-3.5-Super-VL | 36 | 2.32 | 1638/523 | $0.035 |
+| ultra | nvidia/Nemotron-3-Ultra-550b-a55b | 46 | 5.93 | 1799/1875 | $0.342 |

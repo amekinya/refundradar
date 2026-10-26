@@ -1,5 +1,5 @@
 {
- "run_at": "2026-10-26 19:04 UTC",
+ "run_at": "2026-10-26 19:07 UTC",
  "routing": {
   "n": 46,
   "systems": {
@@ -1030,7 +1030,7 @@
    "chapter99_lines": 1.0,
    "ieepa_duty": 0.9,
    "total_duty": 1.0,
-   "entry_number_after_check_digit_repair": 0.767
+   "entry_number_after_check_digit": 0.833
   },
   "overall_field_accuracy": 0.914,
   "photos_fully_correct": 0.5,
@@ -1039,9 +1039,9 @@
    "0.5": 0.5,
    "0.9": 0.5
   },
-  "avg_seconds": 1.84,
-  "cost_usd": 0.0235,
-  "wrong_entry_numbers_flagged_for_review": "6/7",
+  "avg_seconds": 2.78,
+  "cost_usd": 0.0347,
+  "wrong_entry_numbers_flagged_for_review": "4/5",
   "rows": [
    {
     "file": "form_00.jpg",
@@ -1053,7 +1053,7 @@
       "K4M-1383043-1"
      ]
     },
-    "seconds": 2.6,
+    "seconds": 2.32,
     "cost_usd": 0.00085
    },
    {
@@ -1061,7 +1061,7 @@
     "strength": 0.5,
     "all_correct": true,
     "wrong": {},
-    "seconds": 1.95,
+    "seconds": 1.92,
     "cost_usd": 0.00078
    },
    {
@@ -1074,7 +1074,7 @@
       "Q7Z-3211872-0"
      ]
     },
-    "seconds": 1.72,
+    "seconds": 1.87,
     "cost_usd": 0.00078
    },
    {
@@ -1082,7 +1082,7 @@
     "strength": 0.2,
     "all_correct": true,
     "wrong": {},
-    "seconds": 1.86,
+    "seconds": 1.73,
     "cost_usd": 0.00078
    },
    {
@@ -1095,7 +1095,7 @@
       "00-4417730ZZ"
      ]
     },
-    "seconds": 1.73,
+    "seconds": 1.67,
     "cost_usd": 0.00078
    },
    {
@@ -1103,7 +1103,7 @@
     "strength": 0.9,
     "all_correct": true,
     "wrong": {},
-    "seconds": 1.79,
+    "seconds": 1.69,
     "cost_usd": 0.00078
    },
    {
@@ -1111,7 +1111,7 @@
     "strength": 0.2,
     "all_correct": true,
     "wrong": {},
-    "seconds": 2.2,
+    "seconds": 1.77,
     "cost_usd": 0.00077
    },
    {
@@ -1119,7 +1119,7 @@
     "strength": 0.5,
     "all_correct": true,
     "wrong": {},
-    "seconds": 1.59,
+    "seconds": 1.81,
     "cost_usd": 0.00072
    },
    {
@@ -1127,7 +1127,7 @@
     "strength": 0.9,
     "all_correct": true,
     "wrong": {},
-    "seconds": 1.92,
+    "seconds": 1.93,
     "cost_usd": 0.00085
    },
    {
@@ -1135,7 +1135,7 @@
     "strength": 0.2,
     "all_correct": true,
     "wrong": {},
-    "seconds": 2.0,
+    "seconds": 2.05,
     "cost_usd": 0.00078
    },
    {
@@ -1143,7 +1143,7 @@
     "strength": 0.5,
     "all_correct": false,
     "wrong": {},
-    "seconds": 1.93,
+    "seconds": 1.87,
     "cost_usd": 0.00084
    },
    {
@@ -1156,7 +1156,7 @@
       "00-4417730ZZ"
      ]
     },
-    "seconds": 2.07,
+    "seconds": 1.84,
     "cost_usd": 0.00085
    },
    {
@@ -1169,8 +1169,8 @@
       "K4M-9705955-0"
      ]
     },
-    "seconds": 2.11,
-    "cost_usd": 0.00078
+    "seconds": 17.93,
+    "cost_usd": 0.00705
    },
    {
     "file": "form_13.jpg",
@@ -1182,15 +1182,15 @@
       "T2R-2236315-9"
      ]
     },
-    "seconds": 1.72,
-    "cost_usd": 0.00078
+    "seconds": 8.15,
+    "cost_usd": 0.00299
    },
    {
     "file": "form_14.jpg",
     "strength": 0.9,
     "all_correct": true,
     "wrong": {},
-    "seconds": 1.62,
+    "seconds": 1.69,
     "cost_usd": 0.00078
    },
    {
@@ -1203,7 +1203,7 @@
       "00-4417730ZZ"
      ]
     },
-    "seconds": 1.59,
+    "seconds": 1.53,
     "cost_usd": 0.0007
    },
    {
@@ -1211,7 +1211,7 @@
     "strength": 0.5,
     "all_correct": true,
     "wrong": {},
-    "seconds": 1.9,
+    "seconds": 1.79,
     "cost_usd": 0.00071
    },
    {
@@ -1219,7 +1219,7 @@
     "strength": 0.9,
     "all_correct": true,
     "wrong": {},
-    "seconds": 1.81,
+    "seconds": 2.05,
     "cost_usd": 0.00078
    },
    {
@@ -1232,7 +1232,7 @@
       "Q7Z-1292880-9"
      ]
     },
-    "seconds": 1.73,
+    "seconds": 1.69,
     "cost_usd": 0.00078
    },
    {
@@ -1240,7 +1240,7 @@
     "strength": 0.5,
     "all_correct": true,
     "wrong": {},
-    "seconds": 1.95,
+    "seconds": 2.05,
     "cost_usd": 0.00085
    },
    {
@@ -1253,15 +1253,15 @@
       "K4M-2953968-7"
      ]
     },
-    "seconds": 1.87,
-    "cost_usd": 0.00085
+    "seconds": 3.88,
+    "cost_usd": 0.00174
    },
    {
     "file": "form_21.jpg",
     "strength": 0.2,
     "all_correct": true,
     "wrong": {},
-    "seconds": 1.69,
+    "seconds": 1.8,
     "cost_usd": 0.00072
    },
    {
@@ -1269,7 +1269,7 @@
     "strength": 0.5,
     "all_correct": true,
     "wrong": {},
-    "seconds": 1.77,
+    "seconds": 1.69,
     "cost_usd": 0.00079
    },
    {
@@ -1282,7 +1282,7 @@
       "00-4417730ZZ"
      ]
     },
-    "seconds": 1.58,
+    "seconds": 1.77,
     "cost_usd": 0.0007
    },
    {
@@ -1295,8 +1295,8 @@
       "T2R-3759759-3"
      ]
     },
-    "seconds": 1.68,
-    "cost_usd": 0.00071
+    "seconds": 3.89,
+    "cost_usd": 0.00165
    },
    {
     "file": "form_25.jpg",
@@ -1308,8 +1308,8 @@
       "K4M-1898260-9"
      ]
     },
-    "seconds": 1.88,
-    "cost_usd": 0.00083
+    "seconds": 3.99,
+    "cost_usd": 0.00171
    },
    {
     "file": "form_26.jpg",
@@ -1321,7 +1321,7 @@
       "Q7Z-6523015-2"
      ]
     },
-    "seconds": 1.72,
+    "seconds": 1.65,
     "cost_usd": 0.00077
    },
    {
@@ -1329,7 +1329,7 @@
     "strength": 0.2,
     "all_correct": true,
     "wrong": {},
-    "seconds": 1.73,
+    "seconds": 1.66,
     "cost_usd": 0.00078
    },
    {
@@ -1346,7 +1346,7 @@
       "00-2264918AB"
      ]
     },
-    "seconds": 1.74,
+    "seconds": 1.83,
     "cost_usd": 0.00077
    },
    {
@@ -1354,7 +1354,7 @@
     "strength": 0.9,
     "all_correct": true,
     "wrong": {},
-    "seconds": 1.79,
+    "seconds": 1.94,
     "cost_usd": 0.00085
    }
   ]
@@ -1676,19 +1676,19 @@
   },
   "super_vl": {
    "model": "nvidia/Nemotron-3.5-Super-VL",
-   "calls": 30,
-   "avg_seconds": 1.84,
-   "avg_tokens_in": 1676,
-   "avg_tokens_out": 310,
-   "cost_usd": 0.0235
+   "calls": 36,
+   "avg_seconds": 2.32,
+   "avg_tokens_in": 1638,
+   "avg_tokens_out": 523,
+   "cost_usd": 0.0347
   },
   "ultra": {
    "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-   "calls": 66,
-   "avg_seconds": 4.49,
-   "avg_tokens_in": 1344,
-   "avg_tokens_out": 1375,
-   "cost_usd": 0.3611
+   "calls": 46,
+   "avg_seconds": 5.93,
+   "avg_tokens_in": 1799,
+   "avg_tokens_out": 1875,
+   "cost_usd": 0.3416
   }
  }
 }
