@@ -249,8 +249,12 @@ def main():
     res["routing_calls"] = [asdict(c) for c in calls]  # so a later run that reuses routing still reports its cost per tier
     if not a.skip_forms:
         res["forms"] = forms()
+    elif "forms" in prev:
+        res["forms"] = prev["forms"]  # keep the last results rather than dropping the section
     if not a.skip_offers:
         res["offers"] = offers()
+    elif "offers" in prev:
+        res["offers"] = prev["offers"]
     res["tiers"] = tiers()
     (ROOT / "eval/results.json").write_text(json.dumps(res, indent=1))
     (ROOT / "eval/RESULTS.md").write_text(render_md(res))
