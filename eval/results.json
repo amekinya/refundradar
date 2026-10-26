@@ -1,0 +1,245 @@
+{
+ "run_at": "2026-10-26 18:22 UTC",
+ "routing": {
+  "n": 46,
+  "systems": {
+   "Rule engine": {
+    "route_accuracy": 1.0,
+    "rule_accuracy": 1.0,
+    "deadline_exact": 1.0,
+    "seconds_total": 0.01,
+    "cost_usd": 0.0,
+    "misses": []
+   },
+   "Nemotron 3 Ultra (model only)": {
+    "route_accuracy": 0.913,
+    "rule_accuracy": 0.891,
+    "deadline_exact": 0.348,
+    "seconds_total": 226.24,
+    "cost_usd": 0.3559,
+    "misses": [
+     {
+      "entry": "Q7Z41028415",
+      "expected": "R0b",
+      "got": "ERR"
+     },
+     {
+      "entry": "Q7Z41028019",
+      "expected": "R0b",
+      "got": "ERR"
+     },
+     {
+      "entry": "Q7Z41032722",
+      "expected": "R7",
+      "got": "R11"
+     },
+     {
+      "entry": "Q7Z41032615",
+      "expected": "R7",
+      "got": "R11"
+     }
+    ]
+   },
+   "Nemotron 3 Nano (model only)": {
+    "route_accuracy": 0.848,
+    "rule_accuracy": 0.848,
+    "deadline_exact": 0.391,
+    "seconds_total": 805.69,
+    "cost_usd": 0.024,
+    "misses": [
+     {
+      "entry": "Q7Z41028415",
+      "expected": "R0b",
+      "got": "R0"
+     },
+     {
+      "entry": "Q7Z41028019",
+      "expected": "R0b",
+      "got": "R0"
+     },
+     {
+      "entry": "Q7Z41028316",
+      "expected": "R0b",
+      "got": "R0"
+     },
+     {
+      "entry": "Q7Z41034645",
+      "expected": "R10",
+      "got": "R9"
+     },
+     {
+      "entry": "Q7Z41034553",
+      "expected": "R10",
+      "got": "R9"
+     },
+     {
+      "entry": "Q7Z41029058",
+      "expected": "R18",
+      "got": "R11"
+     },
+     {
+      "entry": "Q7Z41033993",
+      "expected": "R4",
+      "got": "R3"
+     }
+    ]
+   }
+  }
+ },
+ "forms": {
+  "n": 30,
+  "field_accuracy": {
+   "entry_number": 0.633,
+   "entry_type": 1.0,
+   "entry_date": 0.7,
+   "importer_number": 0.933,
+   "chapter99_lines": 1.0,
+   "ieepa_duty": 0.9,
+   "total_duty": 1.0
+  },
+  "overall_field_accuracy": 0.881,
+  "photos_fully_correct": 0.3,
+  "by_photo_quality": {
+   "0.2": 0,
+   "0.5": 0.4,
+   "0.9": 0.5
+  },
+  "avg_seconds": 1.89,
+  "cost_usd": 0.0228
+ },
+ "offers": {
+  "n": 20,
+  "verdict_accuracy": 0.1,
+  "scams_caught": "1/10",
+  "legit_flagged_as_scam": "8/10",
+  "red_flag_recall": 0.2,
+  "rows": [
+   {
+    "file": "offer_00.txt",
+    "expected": "likely_scam",
+    "got": "reasonable"
+   },
+   {
+    "file": "offer_01.txt",
+    "expected": "likely_scam",
+    "got": "ERR"
+   },
+   {
+    "file": "offer_02.txt",
+    "expected": "likely_scam",
+    "got": "ERR"
+   },
+   {
+    "file": "offer_03.txt",
+    "expected": "likely_scam",
+    "got": "ERR"
+   },
+   {
+    "file": "offer_04.txt",
+    "expected": "likely_scam",
+    "got": "ERR"
+   },
+   {
+    "file": "offer_05.txt",
+    "expected": "likely_scam",
+    "got": "likely_scam"
+   },
+   {
+    "file": "offer_06.txt",
+    "expected": "likely_scam",
+    "got": "ERR"
+   },
+   {
+    "file": "offer_07.txt",
+    "expected": "likely_scam",
+    "got": "ERR"
+   },
+   {
+    "file": "offer_08.txt",
+    "expected": "likely_scam",
+    "got": "ERR"
+   },
+   {
+    "file": "offer_09.txt",
+    "expected": "likely_scam",
+    "got": "ERR"
+   },
+   {
+    "file": "offer_10.txt",
+    "expected": "reasonable",
+    "got": "likely_scam"
+   },
+   {
+    "file": "offer_11.txt",
+    "expected": "reasonable",
+    "got": "likely_scam"
+   },
+   {
+    "file": "offer_12.txt",
+    "expected": "reasonable",
+    "got": "likely_scam"
+   },
+   {
+    "file": "offer_13.txt",
+    "expected": "reasonable",
+    "got": "reasonable"
+   },
+   {
+    "file": "offer_14.txt",
+    "expected": "reasonable",
+    "got": "ERR"
+   },
+   {
+    "file": "offer_15.txt",
+    "expected": "expensive",
+    "got": "likely_scam"
+   },
+   {
+    "file": "offer_16.txt",
+    "expected": "expensive",
+    "got": "likely_scam"
+   },
+   {
+    "file": "offer_17.txt",
+    "expected": "expensive",
+    "got": "likely_scam"
+   },
+   {
+    "file": "offer_18.txt",
+    "expected": "reasonable",
+    "got": "likely_scam"
+   },
+   {
+    "file": "offer_19.txt",
+    "expected": "reasonable",
+    "got": "likely_scam"
+   }
+  ]
+ },
+ "tiers": {
+  "nano": {
+   "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "calls": 46,
+   "avg_seconds": 17.52,
+   "avg_tokens_in": 1799,
+   "avg_tokens_out": 1720,
+   "cost_usd": 0.024
+  },
+  "super_vl": {
+   "model": "nvidia/Nemotron-3.5-Super-VL",
+   "calls": 30,
+   "avg_seconds": 1.89,
+   "avg_tokens_in": 1607,
+   "avg_tokens_out": 308,
+   "cost_usd": 0.0228
+  },
+  "ultra": {
+   "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "calls": 66,
+   "avg_seconds": 5.93,
+   "avg_tokens_in": 1317,
+   "avg_tokens_out": 2082,
+   "cost_usd": 0.4992
+  }
+ }
+}
