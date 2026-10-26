@@ -291,3 +291,4 @@ tr.worst td:nth-child(5) { color: var(--stamp); font-weight: 700; }
 }
 
 .ff .fix { display: block; color: var(--ink-3); font-size: 12px; margin-top: 2px; }
+.ff .ok { display: block; color: var(--ledger); font-size: 12px; margin-top: 2px; }

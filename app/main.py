@@ -178,12 +178,28 @@ async def analyze_upload(
 
 
 def _checked_form(form: dict, known_filers: set[str]) -> tuple[dict, bool]:
-    """Repair a look-alike misread in the entry number with the CBP check digit (Q read as 0, Z as 2...)."""
+    """Repair a look-alike misread in the entry number with the CBP check digit (Q read as 0, Z as 2...), and
+    cross-check the duty read from each tariff line against Block 37, the form's own total."""
     form = dict(form)
     fixed, changed = EN.repair(form.get("entry_number", ""), known_filers)
     if changed:  # show both so the user can see why
         form["entry_number_as_read"], form["entry_number"] = form["entry_number"], EN.display(fixed)
+    form["duty_check"] = duty_check(form)
     return form, changed
+
+
+def duty_check(form: dict) -> dict:
+    """The form checks itself: the line duties (column 34) should add up to Block 37. A gap means a digit was misread
+    or a line was missed, and the refund amount built from those lines is off; the user is asked to look."""
+    try:
+        lines = sum(float(d or 0) for ln in form.get("lines", []) for d in ln.get("duties", []))
+        total = float(form.get("total_duty") or 0)
+    except (TypeError, ValueError):
+        return {"ok": None}
+    if not total and not lines:
+        return {"ok": None}
+    gap = round(total - lines, 2)
+    return {"ok": abs(gap) <= max(1.0, 0.005 * total), "lines_sum": round(lines, 2), "block_37": round(total, 2), "gap": gap}
 
 
 @app.get("/api/sample")

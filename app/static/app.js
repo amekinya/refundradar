@@ -334,7 +334,8 @@
           <div class="ff ${other ? "alert" : ""}"><span>23. Importer no.</span><b>${esc(f.importer_number)}</b></div>
           <div class="ff ${other ? "alert" : ""}"><span>26. Importer of record</span><b>${esc(f.importer_name)}</b></div>
           <div class="ff wide"><span>29 / 34. Tariff lines and duty</span><b>${lineTxt}</b></div>
-          <div class="ff"><span>37. Duty total</span><b>${fmt2(f.total_duty)}</b></div>
+          <div class="ff"><span>37. Duty total</span><b>${fmt2(f.total_duty)}</b>${f.duty_check && f.duty_check.ok === true ? `<small class="ok">The tariff lines add up to this total</small>`
+            : f.duty_check && f.duty_check.ok === false ? `<small class="fix">The tariff lines add up to ${fmt2(f.duty_check.lines_sum)}, not ${fmt2(f.duty_check.block_37)}. Check the photo: a digit may be misread or a line missed.</small>` : ""}</div>
           ${other ? `<p class="holder-note">The importer of record here is <strong>${esc(f.importer_name)}</strong>, not you, so this refund belongs to them. Ask them to file and pass it through.</p>` : ""}
         </div></article>`;
     }).join("");
