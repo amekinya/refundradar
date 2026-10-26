@@ -99,7 +99,7 @@
           <span class="lg protest">Protest deadline</span>
           <span class="lg court">Court-filing decision point</span>
         </div>
-        <div id="radarChart" class="radar-chart" role="img"></div>
+        <div id="radarChart" class="radar-chart" role="img" tabindex="0"></div>
         <p id="radarReadout" class="radar-readout" aria-live="polite"></p>
       </section>
 
@@ -140,7 +140,7 @@
             <button class="chip" id="clearFilter" type="button" hidden>Show all</button>
           </div>
         </div>
-        <div class="table-wrap">
+        <div class="table-wrap" tabindex="0" role="region" aria-label="Entries">
           <table id="entryTable">
             <thead><tr><th scope="col">Entry</th><th scope="col">What to do</th><th scope="col" class="num">IEEPA duty</th><th scope="col" class="num">Interest</th><th scope="col">Deadline</th></tr></thead>
             <tbody></tbody>
@@ -162,7 +162,7 @@
           <h2 id="costTitle">What it should cost to recover</h2>
           <p id="costMeta"></p>
         </div>
-        <div class="table-wrap">
+        <div class="table-wrap" tabindex="0" role="region" aria-label="Recovery cost comparison">
           <table id="costTable">
             <thead><tr><th scope="col">Option</th><th scope="col">How it's priced</th><th scope="col" class="num">Cost</th><th scope="col" class="num">You keep</th><th scope="col" class="num">Fee share</th></tr></thead>
             <tbody></tbody>
