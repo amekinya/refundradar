@@ -4,7 +4,7 @@
 
 Built for the Nebius × NVIDIA Global AI Hackathon (Best Apps & Agents track) with NVIDIA Nemotron models on **Nebius Token Factory** and **Tavily**.
 
-- Live demo: _link added at deploy_
+- **Live demo:** [refundradar-f9ul.onrender.com](https://refundradar-f9ul.onrender.com/) (press **See it with a sample importer**). Free hosting: the first visit after a quiet spell can take about a minute to wake up.
 - Demo video: _link added after recording_
 
 > RefundRadar is a self-check tool for importers of record reviewing their own entries. It is not a customs broker or law firm and does not file with CBP. Refund requests are filed only in ACE, by the importer or its licensed customs broker. All demo data is synthetic.
