@@ -150,9 +150,7 @@ async def analyze_upload(
             form = tasks.read_form(data, ph.content_type or "image/jpeg", calls)
         except LiveModelUnavailable:
             raise HTTPException(503, "Reading photos needs the AI service, which isn't available right now. Try the CSV path or the sample.")
-        fixed, changed = EN.repair(form.get("entry_number", ""), known_filers)
-        if changed:  # the CBP check digit says the model misread a look-alike character; show both so the user can see why
-            form["entry_number_as_read"], form["entry_number"] = form["entry_number"], EN.display(fixed)
+        form, changed = _checked_form(form, known_filers)
         review_grid.append({"file": ph.filename, "fields": form, "corrected": changed})
         entries.append(form_to_entry(form, ph.filename))
     if photos:
@@ -172,15 +170,25 @@ async def analyze_upload(
     return JSONResponse(report)
 
 
+def _checked_form(form: dict, known_filers: set[str]) -> tuple[dict, bool]:
+    """Repair a look-alike misread in the entry number with the CBP check digit (Q read as 0, Z as 2...)."""
+    form = dict(form)
+    fixed, changed = EN.repair(form.get("entry_number", ""), known_filers)
+    if changed:  # show both so the user can see why
+        form["entry_number_as_read"], form["entry_number"] = form["entry_number"], EN.display(fixed)
+    return form, changed
+
+
 @app.get("/api/sample")
 def sample():
     """The demo importer: ES-003 export + three courier-handled form photos. Uses cached model outputs."""
     cache = _demo_cache()
     entries, info = parse_csv((SAMPLE / "prairie_lantern_es003.csv").read_text())
     review_grid = []
+    known_filers = {EN.normalize(e.entry_number)[:3] for e in entries if len(EN.normalize(e.entry_number)) == 11}
     for p in sorted((SAMPLE / "photos").glob("*.jpg")):
-        form = cache.get("forms", {}).get(p.name) or json.loads(p.with_suffix(".json").read_text())
-        review_grid.append({"file": p.name, "fields": form, "url": f"/api/sample/photo/{p.name}"})
+        form, changed = _checked_form(cache.get("forms", {}).get(p.name) or json.loads(p.with_suffix(".json").read_text()), known_filers)
+        review_grid.append({"file": p.name, "fields": form, "url": f"/api/sample/photo/{p.name}", "corrected": changed})
         entries.append(form_to_entry(form, p.name))
     prof = Profile(importer_number="00-7351942AA", has_ace_account=True, ach_refund_enrolled=False, corporate=True)
     report = A.analyze(entries, prof, DEMO_TODAY)
