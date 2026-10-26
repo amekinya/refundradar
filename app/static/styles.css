@@ -289,3 +289,5 @@ tr.worst td:nth-child(5) { color: var(--stamp); font-weight: 700; }
   .entry-tools input { min-width: 0; width: 100%; }
   th, td { padding: 9px 10px; }
 }
+
+.ff .fix { display: block; color: var(--ink-3); font-size: 12px; margin-top: 2px; }

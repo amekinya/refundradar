@@ -27,6 +27,7 @@ from app.ai import tasks
 from app.ai.client import CallRecord, chat_json
 from app.config import settings
 from app.engine import catalog as C
+from app.engine import entry_number as EN
 from app.engine.es003 import parse_csv
 from app.engine.models import Profile
 from app.engine.rules import route_entry
@@ -118,10 +119,13 @@ def _score(sample, labels, preds, secs, cost) -> dict:
             "seconds_total": round(secs, 2), "cost_usd": round(cost, 4), "misses": misses[:10]}
 
 
+KNOWN_FILERS = frozenset({"K4M", "T2R", "Q7Z"})  # the filer codes in the synthetic importer's ES-003 export
+
+
 def forms() -> dict:
     files = sorted((ROOT / "data/forms").glob("form_*.jpg"))
     fields = defaultdict(lambda: [0, 0])
-    per_photo = []
+    per_photo, unrepaired = [], []
     for f in files:
         truth = json.loads(f.with_suffix(".json").read_text())
         local: list[CallRecord] = []
@@ -144,17 +148,26 @@ def forms() -> dict:
         }
         for k, v in checks.items():
             fields[k][0] += v; fields[k][1] += 1
+        # The app repairs look-alike misreads with the CBP check digit, using the filer codes in the importer's own export.
+        fixed, _ = EN.repair(got.get("entry_number", ""), KNOWN_FILERS)
+        repaired_ok = alnum(fixed) == alnum(truth["entry_number"])
+        flagged = bool(EN.validate(fixed))
+        fields["entry_number_after_check_digit_repair"][0] += repaired_ok; fields["entry_number_after_check_digit_repair"][1] += 1
+        if not repaired_ok:
+            unrepaired.append(flagged)
         wrong = {k: [str(got.get(k, ""))[:40], str(truth.get(k, ""))[:40]] for k, v in checks.items() if not v and k in truth}
         per_photo.append({"file": f.name, "strength": truth["photo_strength"], "all_correct": all(checks.values()), "wrong": wrong,
                           "seconds": round(sum(c.seconds for c in local), 2), "cost_usd": round(sum(c.cost_usd for c in local), 5)})
-    total_fields = sum(v[1] for v in fields.values())
+    base = {k: v for k, v in fields.items() if k != "entry_number_after_check_digit_repair"}
+    total_fields = sum(v[1] for v in base.values())
     return {"n": len(files), "field_accuracy": {k: round(a / b, 3) for k, (a, b) in fields.items()},
-            "overall_field_accuracy": round(sum(v[0] for v in fields.values()) / max(total_fields, 1), 3),
+            "overall_field_accuracy": round(sum(v[0] for v in base.values()) / max(total_fields, 1), 3),
             "photos_fully_correct": round(sum(p["all_correct"] for p in per_photo) / max(len(per_photo), 1), 3),
             "by_photo_quality": {s: round(statistics.mean(p["all_correct"] for p in per_photo if p["strength"] == s), 3)
                                  for s in sorted({p["strength"] for p in per_photo})},
             "avg_seconds": round(statistics.mean(p["seconds"] for p in per_photo), 2) if per_photo else 0,
-            "cost_usd": round(sum(p["cost_usd"] for p in per_photo), 4), "rows": per_photo}
+            "cost_usd": round(sum(p["cost_usd"] for p in per_photo), 4),
+            "wrong_entry_numbers_flagged_for_review": f"{sum(unrepaired)}/{len(unrepaired)}", "rows": per_photo}
 
 
 def _iso(d: str) -> str:
@@ -183,7 +196,7 @@ def offers() -> dict:
         fb = tasks.offer_check_fallback(text, 50_000, 30)
         rows.append({"file": lab["file"], "expected": lab["label"], "flags_expected": lab["flags"],
                      "got": r.get("verdict"), "flags_got": sorted({f["flag"] for f in r.get("red_flags", [])}), "error": err,
-                     "dropped_unquoted": r.get("unquoted_flags_dropped", 0), "fallback": fb["verdict"]})
+                     "model_flags_rejected": r.get("model_flags_rejected", 0), "fee_pct": r.get("effective_pct"), "fallback": fb["verdict"]})
 
     def score(key: str) -> dict:
         n = len(rows)
@@ -246,16 +259,20 @@ def render_md(r: dict) -> str:
         f = r["forms"]
         L += [f"\n## 2. Reading {f['n']} photographed Form 7501s (Nemotron 3.5 Super VL)\n", "| Field | Accuracy |", "|---|---|"]
         L += [f"| {k} | {v:.0%} |" for k, v in f["field_accuracy"].items()]
+        if "wrong_entry_numbers_flagged_for_review" in f:
+            L += [f"\nEntry numbers still wrong after the check-digit repair that fail validation, so the app flags them for review: {f['wrong_entry_numbers_flagged_for_review']}."]
         L += [f"\nAll fields correct on {f['photos_fully_correct']:.0%} of photos; by photo quality (light/medium/heavy distortion): "
               + ", ".join(f"{k}: {v:.0%}" for k, v in f["by_photo_quality"].items()) + f". Avg {f['avg_seconds']}s per photo, total ${f['cost_usd']:.3f}."]
     if "offers" in r:
         o = r["offers"]
         L += [f"\n## 3. Offer check ({o['n']} offers: 10 scams, 10 legitimate)\n",
-              "Both rows use the same code rule for the verdict; they differ in who reads the offer.\n",
+              "Both rows use the same code rule for the verdict. The first adds Nemotron 3 Ultra: it reads the fee terms (percent, flat, per entry, "
+              "minimum) to price the offer on your numbers, and proposes red flags that code keeps only if they quote the offer and match the flag's "
+              "definition. The flag definitions and these 20 offers were written by the same author, so treat this as a sanity check, not field accuracy.\n",
               "| Reader | Right verdict | Scams caught | Legitimate offers flagged as scams |", "|---|---|---|---|",
-              f"| Nemotron 3 Ultra (flags must quote the offer) | {o['live']['verdict_accuracy']:.0%} | {o['live']['scams_caught']} | {o['live']['legit_flagged_as_scam']} |",
+              f"| Nemotron 3 Ultra reading + code rules | {o['live']['verdict_accuracy']:.0%} | {o['live']['scams_caught']} | {o['live']['legit_flagged_as_scam']} |",
               f"| Keyword rules only (no model) | {o['fallback']['verdict_accuracy']:.0%} | {o['fallback']['scams_caught']} | {o['fallback']['legit_flagged_as_scam']} |",
-              f"\nRed-flag recall (Ultra): {o['red_flag_recall']:.0%}. Errors: {o['errors']}."]
+              f"\nRed-flag recall: {o['red_flag_recall']:.0%}. Model-proposed flags rejected by code: {sum(x.get('model_flags_rejected', 0) for x in o['rows'])}. Errors: {o['errors']}."]
     L += ["\n## 4. Cost and latency by model tier\n", "| Tier | Model | Calls | Avg seconds | Avg tokens in/out | Cost |", "|---|---|---|---|---|---|"]
     L += [f"| {k} | {v['model']} | {v['calls']} | {v['avg_seconds']} | {v['avg_tokens_in']}/{v['avg_tokens_out']} | ${v['cost_usd']:.3f} |" for k, v in r["tiers"].items()]
     return "\n".join(L) + "\n"

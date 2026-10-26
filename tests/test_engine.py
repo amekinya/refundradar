@@ -223,13 +223,26 @@ def test_news_date_parsing():
 
 
 def test_offer_verdict_is_decided_by_code():
-    from app.ai.tasks import _quoted, offer_verdict
+    from app.ai.tasks import _verified, find_flags, offer_verdict
 
     offer = "Our fee is 15%. We never need your ACE login. Reply with your ACE Portal username and password today."
-    assert _quoted("Reply with your ACE Portal username and password", offer)
-    assert not _quoted("We never need your ACE login", offer)  # a negation is a green flag
-    assert not _quoted("send us your bank account number", offer)  # not in the offer: the model made it up
+    assert _verified({"flag": "asks_for_ace_login", "evidence": "Reply with your ACE Portal username and password today"}, offer)
+    assert not _verified({"flag": "asks_for_ace_login", "evidence": "We never need your ACE login"}, offer)  # negation
+    assert not _verified({"flag": "upfront_payment", "evidence": "Our fee is 15%"}, offer)  # a fee isn't an upfront payment
+    assert not _verified({"flag": "asks_for_bank_details", "evidence": "send us your bank account number"}, offer)  # not in the offer
+    assert {f["flag"] for f in find_flags(offer)} == {"asks_for_ace_login", "urgency_pressure"}
     assert offer_verdict([{"flag": "asks_for_ace_login"}], 15, True) == "likely_scam"
     assert offer_verdict([{"flag": "urgency_pressure"}, {"flag": "guarantees_refund"}], 10, True) == "likely_scam"
     assert offer_verdict([], 30, True) == "expensive"
     assert offer_verdict([], 15, True) == "reasonable"
+
+
+def test_entry_number_repair_uses_check_digit_and_known_filers():
+    from app.engine import entry_number as EN
+
+    known = {"K4M", "T2R", "Q7Z"}
+    assert EN.repair("07Z-9282044-7", known) == ("Q7Z92820447", True)    # Q read as 0
+    assert EN.repair("072-3954911-7", known) == ("Q7Z39549117", True)    # Q as 0 and Z as 2
+    assert EN.repair("M4M-1898260-9", known) == ("K4M18982609", True)    # K as M
+    assert EN.repair("K4M-970955-0", known) == ("K4M9709550", False)     # a dropped digit can't be fixed
+    assert EN.repair("Q7Z-9282044-7", known) == ("Q7Z92820447", False)   # already valid

@@ -322,7 +322,7 @@
       const lineTxt = (f.lines || []).map((l) => l.hts_numbers.map((h, i) => `${h} · ${fmt2(l.duties[i] || 0)}`).join("<br>")).join("<br>");
       return `<article class="photo-card">${p.url ? `<img src="${p.url}" alt="Photo of entry summary ${esc(f.entry_number)}" loading="lazy">` : `<div></div>`}
         <div class="form-fields">
-          <div class="ff"><span>1. Entry no.</span><b>${esc(f.entry_number)}</b></div>
+          <div class="ff"><span>1. Entry no.</span><b>${esc(f.entry_number)}</b>${f.entry_number_as_read ? `<small class="fix">Read as ${esc(f.entry_number_as_read)}; corrected with the CBP check digit</small>` : ""}</div>
           <div class="ff"><span>2. Entry type</span><b>${esc(f.entry_type)}</b></div>
           <div class="ff"><span>7. Entry date</span><b>${esc(f.entry_date)}</b></div>
           <div class="ff ${other ? "alert" : ""}"><span>23. Importer no.</span><b>${esc(f.importer_number)}</b></div>

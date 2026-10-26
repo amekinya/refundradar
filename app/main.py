@@ -18,6 +18,7 @@ from app.ai.client import CallRecord, LiveModelUnavailable, ledger
 from app.config import settings
 from app.engine import analyze as A
 from app.engine import catalog as C
+from app.engine import entry_number as EN
 from app.engine.es003 import parse_csv, parse_date, parse_money
 from app.engine.models import Entry, Line, Profile
 
@@ -138,6 +139,7 @@ async def analyze_upload(
         entries += parsed
         steps.append(step | {"count": len(parsed)})
 
+    known_filers = {EN.normalize(e.entry_number)[:3] for e in entries if len(EN.normalize(e.entry_number)) == 11}
     for ph in photos or []:
         if not ph.filename:
             continue
@@ -148,7 +150,10 @@ async def analyze_upload(
             form = tasks.read_form(data, ph.content_type or "image/jpeg", calls)
         except LiveModelUnavailable:
             raise HTTPException(503, "Reading photos needs the AI service, which isn't available right now. Try the CSV path or the sample.")
-        review_grid.append({"file": ph.filename, "fields": form})
+        fixed, changed = EN.repair(form.get("entry_number", ""), known_filers)
+        if changed:  # the CBP check digit says the model misread a look-alike character; show both so the user can see why
+            form["entry_number_as_read"], form["entry_number"] = form["entry_number"], EN.display(fixed)
+        review_grid.append({"file": ph.filename, "fields": form, "corrected": changed})
         entries.append(form_to_entry(form, ph.filename))
     if photos:
         steps.append({"step": "Read your form photos", "detail": f"{len(review_grid)} photos", "model": settings.super_vl.model_id})

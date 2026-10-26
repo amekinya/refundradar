@@ -49,3 +49,32 @@ def validate(raw: str) -> list[str]:
     if check_digit(e[:10]) != int(e[10]):
         problems.append("Check digit doesn't match (warning only: some filers use an authorized check-digit factor)")
     return problems
+
+
+# Characters a camera or a vision model confuses on printed forms.
+_LOOKALIKE = {"0": "QOD", "Q": "0O", "O": "0Q", "D": "0", "2": "Z", "Z": "2", "1": "IL", "I": "1", "L": "1",
+              "5": "S", "S": "5", "8": "B", "B": "8", "6": "G", "G": "6", "K": "M", "M": "K"}
+_TO_DIGIT = {"O": "0", "Q": "0", "D": "0", "I": "1", "L": "1", "Z": "2", "S": "5", "B": "8", "G": "6"}
+
+
+def repair(raw: str, known_filers: set[str] | frozenset[str] = frozenset()) -> tuple[str, bool]:
+    """Fix a misread entry number using the check digit: try look-alike characters in the 3-character filer code
+    (and letters read in the digit part). Accept a fix only if exactly one candidate passes the check digit, and
+    (when the importer's other entries tell us its filer codes) that candidate uses a known filer code.
+    Returns (entry number, changed). A dropped or extra digit can't be fixed; validate() still flags it for review."""
+    from itertools import product
+
+    e = normalize(raw)
+    if len(e) != 11 or not validate(e):
+        return e, False
+    serial = "".join(_TO_DIGIT.get(c, c) for c in e[3:])
+    if not serial.isdigit():
+        return e, False
+    cands = {"".join(f) + serial for f in product(*[[c, *_LOOKALIKE.get(c, "")] for c in e[:3]])}
+    cands = {c for c in cands if check_digit(c[:10]) == int(c[10])}
+    if known_filers:
+        cands = {c for c in cands if c[:3] in known_filers}
+    if len(cands) == 1:
+        fixed = cands.pop()
+        return fixed, fixed != e
+    return e, False

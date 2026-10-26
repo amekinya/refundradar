@@ -94,7 +94,9 @@ FORM_SCHEMA = {
 
 FORM_PROMPT = (
     "This is a photo or scan of a US CBP Form 7501 (Entry Summary). Extract exactly what is printed; never guess.\n"
-    "- entry_number: Block 1 (format XXX-XXXXXXX-X).\n- entry_type: Block 2 (2 digits).\n- entry_date: Block 7.\n"
+    "- entry_number: Block 1, format XXX-XXXXXXX-X: a 3-character filer code (letters and digits; tell the letter Q from the digit 0, "
+    "Z from 2, K from M), exactly 7 digits, then 1 check digit.\n- entry_type: Block 2 (2 digits).\n"
+    "- entry_date: Block 7, labeled 'Entry Date' (top right). Not Block 3 'Summary Date' and not Block 11 'Import Date'.\n"
     "- importer_number and importer_name: the Importer of Record number and name (Block 23/26 on older forms, 27/30 on the 2026 form).\n"
     "- broker_or_filer: the broker/filer named in the declarant/broker block, if visible.\n"
     "- lines: for each line number in column 27, every HTSUS number listed in column 29 for that line (Chapter 99 numbers like 9903.01.25 "
@@ -276,22 +278,75 @@ def _tavily_company_check(company: str) -> list[dict]:
 
 HARD_FLAGS = {"asks_for_ace_login", "asks_for_bank_details", "claims_to_be_cbp_or_government", "upfront_payment",
               "processes_refunds_outside_ace", "qr_code_or_link_to_pay"}  # each is something CBP says a legitimate filer never does
+SOFT_FLAGS = {"urgency_pressure", "guarantees_refund"}  # two together also mean likely scam
 EXPENSIVE_PCT = 20.0  # contingency firms we found charge 20-35%; licensed brokers charge flat fees of roughly $100-200 per declaration
-_NEGATION = re.compile(r"\b(never|no|not|without|don't|doesn't|won't)\b")
+_NEGATION = re.compile(r"\b(never|no|not|don't|doesn't|won't|cannot|can't)\b")
+_W = r"\W+(?:[\w$.,'-]+\W+){0,%d}?"
+# What each flag means, as a pattern over one sentence of the offer. A flag counts only if its sentence matches and isn't negated.
+FLAG_RX = {
+    "asks_for_ace_login": re.compile(r"\b(send|provide|share|reply with|give|enter|grant|need)\b" + _W % 6 + r"(login|password|credential|username)"),
+    "asks_for_bank_details": re.compile(r"\b(send|provide|share|reply with|confirm|enter|give|email)\b" + _W % 8 + r"(bank|routing|account number|banking)"),
+    "claims_to_be_cbp_or_government": re.compile(r"\b(authorized by|on behalf of|records from|partner(?:ed)? with)\b" + _W % 5
+                                                 + r"(cbp|customs and border|u\.s\. customs|government|treasury)|\bofficial\b" + _W % 3 + r"(refund|partner|processing|agent)"),
+    "upfront_payment": re.compile(r"\b(upfront|up-front|up front|in advance)\b|\b(release|processing|activation|filing|onboarding|setup|set-up)\s+fee\b"
+                                  r"|\b(pay|wire|send)\b" + _W % 5 + r"(fee|\$\d)"),
+    "processes_refunds_outside_ace": re.compile(r"\b(outside|bypass(?:ing)?|instead of)\b" + _W % 4 + r"(ace|cbp|queue|customs)|directly with customs"),
+    "qr_code_or_link_to_pay": re.compile(r"\bqr code\b|\bscan the code\b|\bclick\b" + _W % 3 + r"(link|here|below)|\blink below\b"),
+    "urgency_pressure": re.compile(r"\b(act now|immediately|within \d+ hours|\d+ hours left|today|final notice|last chance|urgent|forfeit\w*|expires?)\b"),
+    "guarantees_refund": re.compile(r"\bguarantee"),
+}
 
 
-def _quoted(evidence: str, text: str) -> bool:
-    """The flag's evidence must actually be in the offer (whitespace and case ignored) and must not be a negation
-    ('we never need your login' is a green flag, not a red one)."""
+def _sentences(text: str) -> list[str]:
+    """Sentences, with each bullet of a list joined to the line that introduces it ('reply with:' + '- your password')."""
+    out, intro = [], ""
+    for line in text.splitlines():
+        line = line.strip()
+        if not line:
+            intro = ""
+            continue
+        bullet = re.match(r"^[\u2022*\-\u2013]\s*(.+)", line)
+        if bullet and intro:
+            out.append(f"{intro} {bullet.group(1)}")
+            continue
+        parts = [x.strip() for x in re.split(r"(?<=[.!?])\s+", line) if x.strip()]
+        out += parts
+        intro = parts[-1] if parts and parts[-1].endswith(":") else ""
+    return out
+
+
+def _flag_in(flag: str, sentence: str) -> str | None:
+    """The matched words if the sentence does what the flag says (and doesn't say it doesn't)."""
+    rx = FLAG_RX.get(flag)
+    m = rx.search(sentence.lower()) if rx else None
+    if m and not _NEGATION.search(sentence.lower()[: m.start()]):
+        return m.group(0)
+    return None
+
+
+def find_flags(text: str) -> list[dict]:
+    """Every red flag the patterns find, quoting its sentence."""
+    out = {}
+    for sent in _sentences(text):
+        for flag in FLAG_RX:
+            if flag not in out and _flag_in(flag, sent):
+                out[flag] = {"flag": flag, "evidence": sent[:200]}
+    return list(out.values())
+
+
+def _verified(flag: dict, text: str) -> bool:
+    """A model-proposed flag counts only if its quote is really in the offer and that sentence matches the flag's meaning."""
     norm = lambda x: re.sub(r"\s+", " ", x.lower()).strip(" .\"'")  # noqa: E731
-    e = norm(evidence)
-    return len(e) >= 8 and e in norm(text) and not _NEGATION.search(e)
+    e = norm(flag.get("evidence", ""))
+    if len(e) < 8 or e not in norm(text):
+        return False
+    return any(e in norm(sent) and _flag_in(flag["flag"], sent) for sent in _sentences(text))
 
 
 def offer_verdict(flags: list[dict], effective_pct: float, priced: bool) -> str:
     """Code decides the verdict from the checked flags and the offer's cost on the user's own numbers."""
     names = {f["flag"] for f in flags}
-    if names & HARD_FLAGS or len(names - HARD_FLAGS - {"other"}) >= 2:
+    if names & HARD_FLAGS or len(names & SOFT_FLAGS) >= 2:
         return "likely_scam"
     if priced and effective_pct >= EXPENSIVE_PCT:
         return "expensive"
@@ -299,18 +354,24 @@ def offer_verdict(flags: list[dict], effective_pct: float, priced: bool) -> str:
 
 
 def offer_check(offer_text: str, refund_estimate: float, entries: int, calls: list[CallRecord] | None = None) -> dict:
+    """Nemotron 3 Ultra reads the fee terms (percent, flat, per entry, minimum: worded a hundred ways) and proposes red flags
+    with quotes. Code keeps a flag only if its quote is in the offer and matches the flag's meaning, adds any the patterns find,
+    prices the offer on the user's own numbers, and decides the verdict."""
     first = chat_json(
         settings.ultra,
         [{"role": "system", "content": "You analyze refund-recovery offers sent to small US importers. Be precise and fair. "
-                                      "List a red flag only when the offer itself does that thing, and quote the exact words as evidence. "
-                                      "Statements that the sender does NOT do something (e.g. 'we never ask for passwords') are green flags."},
+                                      "List a red flag only when the offer itself does that thing, and quote the exact sentence as evidence. "
+                                      "Statements that the sender does NOT do something (e.g. 'we never ask for passwords') are green flags. "
+                                      "Charging a fee is not a red flag by itself; upfront_payment means money due before any refund arrives."},
          {"role": "user", "content": f"{CBP_FRAUD_GUIDANCE}\n\nOffer text:\n\"\"\"\n{offer_text[:6000]}\n\"\"\"\n\n"
                                      "Extract the fee terms (0 when not stated) and the red and green flags. "
                                      "advice: one or two sentences on what to ask or check before replying; don't give a verdict."}],
-        schema=OFFER_SCHEMA, purpose="Check refund offer", reasoning=True, max_tokens=4000, calls=calls,
+        schema=OFFER_SCHEMA, purpose="Check refund offer", reasoning=False, max_tokens=2500, calls=calls,
     )
-    checked = [f for f in first.get("red_flags", []) if _quoted(f.get("evidence", ""), offer_text)]
-    dropped = len(first.get("red_flags", [])) - len(checked)
+    proposed = first.get("red_flags", [])
+    flags = {f["flag"]: f for f in proposed if _verified(f, offer_text)}
+    for f in find_flags(offer_text):
+        flags.setdefault(f["flag"], f)
     try:
         web = _tavily_company_check(first.get("company_name", ""))
     except Exception:  # noqa: BLE001  (the web lookup is extra evidence, never a reason to fail the check)
@@ -318,30 +379,14 @@ def offer_check(offer_text: str, refund_estimate: float, entries: int, calls: li
     priced = any(first.get(k) for k in ("fee_percent", "fee_flat", "fee_per_entry", "fee_minimum"))
     fee, pct = offer_cost(refund_estimate, percent=first["fee_percent"] or None, flat=first["fee_flat"] or None,
                           per_entry=first["fee_per_entry"] or None, entries=entries, minimum=first["fee_minimum"] or None)
-    return {**first, "red_flags": checked, "unquoted_flags_dropped": dropped, "verdict": offer_verdict(checked, pct, priced),
-            "cost_on_your_numbers": fee, "effective_pct": pct, "web_results": web}
-
-
-SCAM_PATTERNS = {
-    "asks_for_ace_login": r"\b(ace|portal)\b.{0,40}\b(login|password|credential|username|access)",
-    "asks_for_bank_details": r"\b(bank|routing|account number|ach)\b.{0,40}\b(details|information|number|send|provide)",
-    "claims_to_be_cbp_or_government": r"\b(on behalf of|authorized by|from)\b.{0,30}\b(cbp|customs and border|government|treasury)",
-    "urgency_pressure": r"\b(act now|immediately|within 48 hours|expires|last chance|final notice|urgent)\b",
-    "upfront_payment": r"\b(upfront|processing fee|activation fee|pay .{0,20} to release)\b",
-    "guarantees_refund": r"\bguarantee",
-    "qr_code_or_link_to_pay": r"\b(qr code|scan the code|click (here|the link) to)\b",
-}
+    checked = list(flags.values())
+    return {**first, "red_flags": checked, "model_flags_rejected": sum(not _verified(f, offer_text) for f in proposed),
+            "verdict": offer_verdict(checked, pct, priced), "cost_on_your_numbers": fee, "effective_pct": pct, "web_results": web}
 
 
 def offer_check_fallback(offer_text: str, refund_estimate: float, entries: int) -> dict:
     t = offer_text.lower()
-    flags = []
-    for k, p in SCAM_PATTERNS.items():
-        for m in re.finditer(p, t):
-            sentence_start = max(t.rfind(".", 0, m.start()), t.rfind("\n", 0, m.start())) + 1
-            if not _NEGATION.search(t[sentence_start : m.start()]):  # "we never ask for your bank details" is not a red flag
-                flags.append({"flag": k, "evidence": m.group(0)})
-                break
+    flags = find_flags(offer_text)
     m = re.search(r"(\d{1,2}(?:\.\d+)?)\s*%", t)
     pct_in = float(m.group(1)) if m else None
     flat = re.search(r"\$\s?([\d,]+(?:\.\d\d)?)\s*(?:one-time\s+)?(?:processing|activation|setup|filing|upfront)?\s*fee", t)
