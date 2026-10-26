@@ -397,6 +397,7 @@
   fetch("/api/freshness").then((r) => r.json()).then((f) => {
     const b = $("#freshBtn");
     if (f.checked && f.changed) { b.classList.add("changed"); b.textContent = "CBP guidance may have changed"; }
+    else if (f.checked && f.changed === null) { b.textContent = "New refund news to review"; }
     else if (f.checked) { b.classList.add("ok"); b.textContent = "Rules checked today"; }
     b.addEventListener("click", () => {
       $("#drawerBody").innerHTML = `<h3>Is the rule set current?</h3>

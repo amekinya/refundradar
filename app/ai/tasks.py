@@ -348,16 +348,43 @@ def freshness(calls: list[CallRecord] | None = None) -> dict:
         results += [{"title": r.get("title", ""), "url": r.get("url", ""), "date": r.get("published_date", ""),
                      "snippet": (r.get("content") or "")[:500]} for r in res.get("results", [])]
     data = {"checked": True, "rules_verified_as_of": C.RULES_VERIFIED_AS_OF.isoformat(), "items": [], "changed": False}
+    # The date cut is code, not the model: only news published after the rules date can be a change.
+    seen, newer = set(), []
+    for r in results:
+        d = _news_date(r["date"])
+        if r["url"] in seen or (d is not None and d <= C.RULES_VERIFIED_AS_OF):
+            continue
+        seen.add(r["url"])
+        newer.append(r | {"date": d.isoformat() if d else r["date"]})
+    if not newer:
+        _fresh_cache.update(at=now, data=data)
+        return data
     try:
         out = chat_json(settings.nano, [{"role": "user", "content": (
             f"Our refund rules were verified on {C.RULES_VERIFIED_AS_OF}. Known pending events: CBP status report Oct 26, 2026; "
             "settlement conference Oct 27; class scheduling order due Nov 5; Federal Circuit appeal pending.\n"
-            "From these news results, list only items dated AFTER the verification date that report a real change or new order "
-            "affecting IEEPA refunds (CAPE windows, Phase 3 access, protests, class relief, the appeal, payments). "
-            f"Ignore background articles.\nResults: {json.dumps(results)[:12000]}")}],
+            "From these news results (all published after the verification date), list only items that report a real change "
+            "or new order affecting IEEPA refunds (CAPE windows, Phase 3 access, protests, class relief, the appeal, payments). "
+            f"Ignore background and explainer articles. Copy each url exactly.\nResults: {json.dumps(newer)[:12000]}")}],
             schema=FRESH_SCHEMA, purpose="Check for rule changes", reasoning=False, max_tokens=1500, calls=calls)
-        data.update(changed=bool(out.get("changed")), items=out.get("items", [])[:6])
+        by_url = {r["url"]: r for r in newer}
+        items = [i | {"date": by_url[i["url"]]["date"]} for i in out.get("items", []) if i["url"] in by_url and i["affects"] != "none"]
+        data.update(changed=bool(items), items=items[:6])
     except LiveModelUnavailable:
-        data["items"] = [{"date": r["date"], "what": r["title"], "url": r["url"], "affects": "other"} for r in results[:4]]
+        data.update(changed=None, items=[{"date": r["date"], "what": r["title"], "url": r["url"], "affects": "other"} for r in newer[:4]])
     _fresh_cache.update(at=now, data=data)
     return data
+
+
+def _news_date(s: str) -> date | None:
+    from email.utils import parsedate_to_datetime
+
+    s = (s or "").strip()
+    try:
+        return parsedate_to_datetime(s).date()
+    except (TypeError, ValueError, IndexError):
+        pass
+    try:
+        return date.fromisoformat(s[:10])
+    except ValueError:
+        return None

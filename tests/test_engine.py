@@ -212,3 +212,11 @@ def test_parse_es003_groups_lines_by_entry():
     assert e.liquidation_date == date(2026, 8, 20) and len(e.lines) == 2
     r = route_entry(e, ME, TODAY)
     assert r.rule_id == "R12" and r.principal == 1000
+
+
+def test_news_date_parsing():
+    from app.ai.tasks import _news_date
+
+    assert _news_date("Mon, 19 Oct 2026 18:00:00 GMT") == date(2026, 10, 19)
+    assert _news_date("2026-10-27T09:00:00Z") == date(2026, 10, 27)
+    assert _news_date("") is None
