@@ -3,6 +3,7 @@
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
   const fmt = (n) => "$" + Math.round(n || 0).toLocaleString("en-US");
+  const fmt100 = (n) => "$" + (Math.round((n || 0) / 100) * 100).toLocaleString("en-US");
   const fmt2 = (n) => "$" + (n || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const dateFmt = (iso) => iso ? new Date(iso + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "";
@@ -115,16 +116,17 @@
 
   function renderVerdict() {
     const h = report.headline;
-    let t = `You can claim <span class="amt good">${fmt(h.reachable_now)}</span> now.`;
-    if (h.urgent_count) t += ` <span class="amt bad">${fmt(h.urgent_amount)}</span> of it leaves CBP's refund tool within 3 weeks${h.urgent_soonest_days <= 7 ? `, the first in ${h.urgent_soonest_days} day${h.urgent_soonest_days === 1 ? "" : "s"}` : ""}.`;
+    let t = `You can claim about <span class="amt good">${fmt100(h.reachable_now)}</span> now.`;
+    if (h.urgent_count) t += ` <span class="amt bad">${fmt100(h.urgent_amount)}</span> of it leaves CBP's refund tool within 3 weeks${h.urgent_soonest_days <= 7 ? `, the first in ${h.urgent_soonest_days} day${h.urgent_soonest_days === 1 ? "" : "s"}` : ""}.`;
     if (!h.reachable_now) t = `Nothing on these entries can go through CBP's refund tool today.`;
     $("#verdictText").innerHTML = t;
     const parts = [];
-    if (h.protest_amount) parts.push(`${fmt(h.protest_amount)} needs a protest before its deadline`);
-    if (h.litigation_amount) parts.push(`${fmt(h.litigation_amount)} can only be recovered in court or through the class action`);
-    if (h.someone_else_amount) parts.push(`${fmt(h.someone_else_amount)} sits on entries where someone else was the importer of record`);
+    if (h.protest_amount) parts.push(`${fmt100(h.protest_amount)} needs a protest before its deadline`);
+    if (h.litigation_amount) parts.push(`${fmt100(h.litigation_amount)} can only be recovered in court or through the class action`);
+    if (h.someone_else_amount) parts.push(`${fmt100(h.someone_else_amount)} sits on entries where someone else was the importer of record`);
     const tail = parts.length ? " " + (parts.length > 1 ? parts.slice(0, -1).join("; ") + "; and " + parts[parts.length - 1] : parts[0]) + "." : "";
-    $("#verdictSub").textContent = `Across ${h.entries} entries we found ${fmt(h.total_principal + h.total_interest)} in IEEPA duty and estimated interest.${tail}`;
+    const range = h.reachable_low != null ? ` Likely range for what you can claim now: ${fmt100(h.reachable_low)}–${fmt100(h.reachable_high)}, based on ${h.reachable_now_count} of ${h.entries} entries (interest method and "15% all-in" lines drive the spread).` : "";
+    $("#verdictSub").textContent = `Across ${h.entries} entries we found about ${fmt100(h.total_principal + h.total_interest)} in IEEPA duty and estimated interest.${tail}${range}`;
   }
 
   function renderStop() {
@@ -204,20 +206,36 @@
     return g;
   }
 
+  // Overview: 3 groups on one bar; detail: sorted bars on a common baseline (Cleveland & McGill 1984; Heer & Bostock 2010).
+  const SUPER = [
+    { key: "ready", label: "Refund-ready", members: ["cape_now", "fix_first"], shades: ["#1F4E9C", "#5B8BD9", "#A9C4F0"] },
+    { key: "action", label: "Needs action", members: ["protest", "review", "someone", "waiting"], shades: ["#B25E00", "#F5A524", "#FBD38D", "#FDE7C2"] },
+    { key: "lost", label: "Not recoverable today", members: ["litigation", "blocked", "not_eligible"], shades: ["#3F3F46", "#8E8E96", "#D4D4D8"] },
+  ];
   function renderBuckets() {
     const g = groups();
-    const total = Object.values(g).reduce((s, x) => s + x.amount, 0) || 1;
-    $("#bucketBar").innerHTML = GROUPS.filter((x) => g[x.key]?.amount > 0)
-      .map((x) => `<span class="c-${x.key}" style="width:${(100 * g[x.key].amount / total).toFixed(2)}%" title="${esc(x.label)}: ${fmt(g[x.key].amount)}"></span>`).join("");
+    const supers = SUPER.map((s) => ({ ...s, amount: s.members.reduce((a, k) => a + (g[k]?.amount || 0), 0), count: s.members.reduce((a, k) => a + (g[k]?.count || 0), 0) }));
+    const total = supers.reduce((a, s) => a + s.amount, 0) || 1;
+    $("#bucketBar").innerHTML = supers.filter((s) => s.amount > 0).map((s) =>
+      `<span class="sb sb-${s.key}" style="width:${(100 * s.amount / total).toFixed(2)}%"><b>${esc(s.label)}</b> ${fmt(s.amount)} · ${Math.round(100 * s.amount / total)}%</span>`).join("");
+    const max = Math.max(1, ...Object.entries(g).filter(([k]) => k !== "not_eligible").map(([, v]) => v.amount));
     const meta = report.bucket_meta;
-    $("#bucketList").innerHTML = GROUPS.filter((x) => g[x.key]).map((x) => `
-      <button type="button" class="bucket-item" data-k="${x.key}" aria-pressed="false">
-        <span class="sw c-${x.key}"></span><span class="bl">${esc(x.label)}</span><span class="ba">${x.key === "not_eligible" ? "" : fmt(g[x.key].amount)}</span>
-        <span class="bd">${g[x.key].count} entr${g[x.key].count > 1 ? "ies" : "y"}. ${esc(x.key === "someone" ? "The refund belongs to your courier, forwarder or supplier." : meta[x.key]?.blurb || "")}</span>
-      </button>`).join("");
-    $$(".bucket-item").forEach((b) => b.addEventListener("click", () => {
+    $("#bucketList").innerHTML = supers.map((s) => {
+      const rows = s.members.filter((k) => g[k]).sort((a, b) => g[b].amount - g[a].amount || g[b].count - g[a].count);
+      if (!rows.length) return "";
+      return `<div class="sgroup"><h3>${esc(s.label)} <span>${fmt(s.amount)}</span></h3>` + rows.map((k, i) => {
+        const x = groupLabel[k]; const v = g[k]; const shade = s.shades[Math.min(i, s.shades.length - 1)];
+        return `<button type="button" class="bucket-row" data-k="${k}" aria-pressed="false">
+          <span class="bl">${esc(x.label)}</span>
+          <span class="track"><span class="fill" style="width:${k === "not_eligible" ? 0 : (100 * v.amount / max).toFixed(1)}%;background:${shade}"></span></span>
+          <span class="ba">${k === "not_eligible" ? "—" : fmt(v.amount)}</span>
+          <span class="bd">${v.count} entr${v.count > 1 ? "ies" : "y"} · ${esc(k === "someone" ? "The refund belongs to your courier, forwarder or supplier." : meta[k]?.blurb || "")}</span>
+        </button>`;
+      }).join("") + `</div>`;
+    }).join("");
+    $$(".bucket-row").forEach((b) => b.addEventListener("click", () => {
       filter = filter === b.dataset.k ? null : b.dataset.k; shown = 40;
-      $$(".bucket-item").forEach((x) => { x.classList.toggle("sel", x.dataset.k === filter); x.setAttribute("aria-pressed", x.dataset.k === filter); });
+      $$(".bucket-row").forEach((x) => { x.classList.toggle("sel", x.dataset.k === filter); x.setAttribute("aria-pressed", x.dataset.k === filter); });
       renderTable(); $("#entriesTitle").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
     }));
   }
@@ -262,7 +280,7 @@
     });
   }
   $("#entrySearch").addEventListener("input", () => { shown = 40; renderTable(); });
-  $("#clearFilter").addEventListener("click", () => { filter = null; $$(".bucket-item").forEach((x) => x.classList.remove("sel")); renderTable(); });
+  $("#clearFilter").addEventListener("click", () => { filter = null; $$(".bucket-row").forEach((x) => x.classList.remove("sel")); renderTable(); });
   $("#moreRows").addEventListener("click", () => { shown += 60; renderTable(); });
 
   function openEntry(num) {

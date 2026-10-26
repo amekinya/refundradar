@@ -72,6 +72,7 @@ class Route:
     liquidation_estimated: bool = False
     programs: tuple[str, ...] = ()
     all_in_overstated: bool = False
+    all_in_duty: float = 0.0
     holder: str = "you"  # you | someone_else
     source: str = "csv"
     notes: list[str] = field(default_factory=list)

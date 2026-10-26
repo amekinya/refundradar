@@ -44,6 +44,7 @@ def route_entry(entry: Entry, profile: Profile, today: date) -> Route:
     s122 = round(sum(l.duty for l in entry.lines if is_section_122(l.hts) and l.duty > 0), 2)
     programs = tuple(sorted({program_of(l.hts) or "" for l in ieepa_lines} - {""}))
     all_in = any(normalize_hts(l.hts) in ALL_IN_15 for l in ieepa_lines)
+    all_in_duty = round(sum(l.duty for l in ieepa_lines if normalize_hts(l.hts) in ALL_IN_15), 2)
 
     # Liquidation: actual if known, else estimated from the entry date (flagged).
     status = (entry.liquidation_status or "").strip().lower()
@@ -67,6 +68,7 @@ def route_entry(entry: Entry, profile: Profile, today: date) -> Route:
         principal=principal,
         programs=programs,
         all_in_overstated=all_in,
+        all_in_duty=all_in_duty,
         liquidation_date=liq if liquidated else None,
         liquidation_estimated=estimated and liquidated,
     )

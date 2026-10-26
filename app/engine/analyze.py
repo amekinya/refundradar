@@ -47,6 +47,10 @@ def analyze(entries: list[Entry], profile: Profile, today: date | None = None) -
         "total_principal": total_principal,
         "total_interest": total_interest,
         "reachable_now": _sum(reachable),
+        # Range: low assumes '15% all-in' lines refund nothing and simple (not daily-compounded) interest;
+        # high assumes the higher non-corporate overpayment rate (7% vs 6%). See README "Estimates".
+        "reachable_low": round(sum(r.principal - r.all_in_duty + 0.97 * r.interest for r in reachable), 2),
+        "reachable_high": round(sum(r.principal + r.interest * (7 / 6 if profile.corporate else 1.0) for r in reachable), 2),
         "reachable_now_count": len(reachable),
         "urgent_count": len(urgent),
         "urgent_amount": _sum(urgent),
