@@ -220,3 +220,16 @@ def test_news_date_parsing():
     assert _news_date("Mon, 19 Oct 2026 18:00:00 GMT") == date(2026, 10, 19)
     assert _news_date("2026-10-27T09:00:00Z") == date(2026, 10, 27)
     assert _news_date("") is None
+
+
+def test_offer_verdict_is_decided_by_code():
+    from app.ai.tasks import _quoted, offer_verdict
+
+    offer = "Our fee is 15%. We never need your ACE login. Reply with your ACE Portal username and password today."
+    assert _quoted("Reply with your ACE Portal username and password", offer)
+    assert not _quoted("We never need your ACE login", offer)  # a negation is a green flag
+    assert not _quoted("send us your bank account number", offer)  # not in the offer: the model made it up
+    assert offer_verdict([{"flag": "asks_for_ace_login"}], 15, True) == "likely_scam"
+    assert offer_verdict([{"flag": "urgency_pressure"}, {"flag": "guarantees_refund"}], 10, True) == "likely_scam"
+    assert offer_verdict([], 30, True) == "expensive"
+    assert offer_verdict([], 15, True) == "reasonable"
