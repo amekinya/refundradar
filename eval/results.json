@@ -1,5 +1,5 @@
 {
- "run_at": "2026-10-26 18:22 UTC",
+ "run_at": "2026-10-26 18:57 UTC",
  "routing": {
   "n": 46,
   "systems": {
@@ -7,45 +7,16 @@
     "route_accuracy": 1.0,
     "rule_accuracy": 1.0,
     "deadline_exact": 1.0,
-    "seconds_total": 0.01,
+    "seconds_total": 0.0,
     "cost_usd": 0.0,
     "misses": []
    },
    "Nemotron 3 Ultra (model only)": {
-    "route_accuracy": 0.913,
+    "route_accuracy": 0.891,
     "rule_accuracy": 0.891,
-    "deadline_exact": 0.348,
-    "seconds_total": 226.24,
-    "cost_usd": 0.3559,
-    "misses": [
-     {
-      "entry": "Q7Z41028415",
-      "expected": "R0b",
-      "got": "ERR"
-     },
-     {
-      "entry": "Q7Z41028019",
-      "expected": "R0b",
-      "got": "ERR"
-     },
-     {
-      "entry": "Q7Z41032722",
-      "expected": "R7",
-      "got": "R11"
-     },
-     {
-      "entry": "Q7Z41032615",
-      "expected": "R7",
-      "got": "R11"
-     }
-    ]
-   },
-   "Nemotron 3 Nano (model only)": {
-    "route_accuracy": 0.848,
-    "rule_accuracy": 0.848,
-    "deadline_exact": 0.391,
-    "seconds_total": 805.69,
-    "cost_usd": 0.024,
+    "deadline_exact": 0.261,
+    "seconds_total": 272.83,
+    "cost_usd": 0.3416,
     "misses": [
      {
       "entry": "Q7Z41028415",
@@ -63,29 +34,991 @@
       "got": "R0"
      },
      {
-      "entry": "Q7Z41034645",
-      "expected": "R10",
-      "got": "R9"
-     },
-     {
-      "entry": "Q7Z41034553",
-      "expected": "R10",
-      "got": "R9"
-     },
-     {
-      "entry": "Q7Z41029058",
-      "expected": "R18",
+      "entry": "Q7Z41032722",
+      "expected": "R7",
       "got": "R11"
      },
      {
-      "entry": "Q7Z41033993",
-      "expected": "R4",
-      "got": "R3"
+      "entry": "Q7Z41032615",
+      "expected": "R7",
+      "got": "R11"
+     }
+    ]
+   },
+   "Nemotron 3 Nano (model only)": {
+    "route_accuracy": 0.87,
+    "rule_accuracy": 0.848,
+    "deadline_exact": 0.478,
+    "seconds_total": 323.07,
+    "cost_usd": 0.0258,
+    "misses": [
+     {
+      "entry": "Q7Z41028415",
+      "expected": "R0b",
+      "got": "R0"
+     },
+     {
+      "entry": "Q7Z41028019",
+      "expected": "R0b",
+      "got": "R1"
+     },
+     {
+      "entry": "Q7Z41028316",
+      "expected": "R0b",
+      "got": "R0"
+     },
+     {
+      "entry": "Q7Z41034645",
+      "expected": "R10",
+      "got": "AD/CVD R10/R9"
+     },
+     {
+      "entry": "Q7Z41032722",
+      "expected": "R7",
+      "got": "R11"
+     },
+     {
+      "entry": "Q7Z41032615",
+      "expected": "R7",
+      "got": "R11"
      }
     ]
    }
   }
  },
+ "routing_run_at": "2026-10-26 18:57 UTC",
+ "routing_calls": [
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 4.159669051999998,
+   "tokens_in": 1750,
+   "tokens_out": 1159,
+   "cached_in": 0,
+   "cost_usd": 0.005227,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 4.184803196000004,
+   "tokens_in": 1749,
+   "tokens_out": 1273,
+   "cached_in": 0,
+   "cost_usd": 0.005568,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 5.385336867999996,
+   "tokens_in": 1853,
+   "tokens_out": 1296,
+   "cached_in": 0,
+   "cost_usd": 0.005741,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 6.0605376980000045,
+   "tokens_in": 1794,
+   "tokens_out": 1887,
+   "cached_in": 0,
+   "cost_usd": 0.007455,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 4.603116338999996,
+   "tokens_in": 1792,
+   "tokens_out": 1493,
+   "cached_in": 0,
+   "cost_usd": 0.006271,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 8.139858157000006,
+   "tokens_in": 1740,
+   "tokens_out": 2190,
+   "cached_in": 0,
+   "cost_usd": 0.00831,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 9.761990630999989,
+   "tokens_in": 1766,
+   "tokens_out": 2704,
+   "cached_in": 0,
+   "cost_usd": 0.009878,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 4.434365018000008,
+   "tokens_in": 1846,
+   "tokens_out": 1550,
+   "cached_in": 0,
+   "cost_usd": 0.006496,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 5.625471962999995,
+   "tokens_in": 1822,
+   "tokens_out": 2150,
+   "cached_in": 0,
+   "cost_usd": 0.008272,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 4.780239733999991,
+   "tokens_in": 1740,
+   "tokens_out": 1724,
+   "cached_in": 0,
+   "cost_usd": 0.006912,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 4.723938129000004,
+   "tokens_in": 1771,
+   "tokens_out": 1726,
+   "cached_in": 0,
+   "cost_usd": 0.006949,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 5.197320247999997,
+   "tokens_in": 1914,
+   "tokens_out": 1834,
+   "cached_in": 0,
+   "cost_usd": 0.007416,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 6.793362966000004,
+   "tokens_in": 1833,
+   "tokens_out": 2900,
+   "cached_in": 0,
+   "cost_usd": 0.010533,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 4.8306530919999915,
+   "tokens_in": 1807,
+   "tokens_out": 1858,
+   "cached_in": 0,
+   "cost_usd": 0.007381,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 6.988924713999992,
+   "tokens_in": 1778,
+   "tokens_out": 2772,
+   "cached_in": 0,
+   "cost_usd": 0.010094,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 6.902955738999992,
+   "tokens_in": 1752,
+   "tokens_out": 2563,
+   "cached_in": 0,
+   "cost_usd": 0.009441,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 6.546441266999977,
+   "tokens_in": 1835,
+   "tokens_out": 2377,
+   "cached_in": 0,
+   "cost_usd": 0.008966,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 4.560164557999997,
+   "tokens_in": 1751,
+   "tokens_out": 1797,
+   "cached_in": 0,
+   "cost_usd": 0.007142,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 6.2253652269999975,
+   "tokens_in": 1752,
+   "tokens_out": 2407,
+   "cached_in": 0,
+   "cost_usd": 0.008973,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 7.567575633000018,
+   "tokens_in": 1751,
+   "tokens_out": 2910,
+   "cached_in": 0,
+   "cost_usd": 0.010481,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 3.97980050999999,
+   "tokens_in": 1796,
+   "tokens_out": 1418,
+   "cached_in": 0,
+   "cost_usd": 0.00605,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 5.5620016539999995,
+   "tokens_in": 1768,
+   "tokens_out": 1921,
+   "cached_in": 0,
+   "cost_usd": 0.007531,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 3.2718248329999824,
+   "tokens_in": 1824,
+   "tokens_out": 1090,
+   "cached_in": 0,
+   "cost_usd": 0.005094,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 2.064116294999991,
+   "tokens_in": 1740,
+   "tokens_out": 566,
+   "cached_in": 0,
+   "cost_usd": 0.003438,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 1.825423857000004,
+   "tokens_in": 1928,
+   "tokens_out": 553,
+   "cached_in": 0,
+   "cost_usd": 0.003587,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 6.441381284000016,
+   "tokens_in": 1907,
+   "tokens_out": 2352,
+   "cached_in": 0,
+   "cost_usd": 0.008963,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 6.895019832000003,
+   "tokens_in": 1769,
+   "tokens_out": 2673,
+   "cached_in": 0,
+   "cost_usd": 0.009788,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 3.702634135000011,
+   "tokens_in": 1845,
+   "tokens_out": 1315,
+   "cached_in": 0,
+   "cost_usd": 0.00579,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 2.807670863999988,
+   "tokens_in": 1767,
+   "tokens_out": 854,
+   "cached_in": 0,
+   "cost_usd": 0.004329,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 2.750826761000013,
+   "tokens_in": 1772,
+   "tokens_out": 1002,
+   "cached_in": 0,
+   "cost_usd": 0.004778,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 3.306730736999981,
+   "tokens_in": 1823,
+   "tokens_out": 1117,
+   "cached_in": 0,
+   "cost_usd": 0.005174,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 3.108521164000024,
+   "tokens_in": 1768,
+   "tokens_out": 1144,
+   "cached_in": 0,
+   "cost_usd": 0.0052,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 3.0107695199999966,
+   "tokens_in": 1846,
+   "tokens_out": 1054,
+   "cached_in": 0,
+   "cost_usd": 0.005008,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 2.905053280000004,
+   "tokens_in": 1822,
+   "tokens_out": 1068,
+   "cached_in": 0,
+   "cost_usd": 0.005026,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 2.9095358729999816,
+   "tokens_in": 1742,
+   "tokens_out": 1129,
+   "cached_in": 0,
+   "cost_usd": 0.005129,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 3.4402775499999905,
+   "tokens_in": 1846,
+   "tokens_out": 1293,
+   "cached_in": 0,
+   "cost_usd": 0.005725,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 6.652660639000004,
+   "tokens_in": 1767,
+   "tokens_out": 2167,
+   "cached_in": 0,
+   "cost_usd": 0.008268,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 12.80700593200001,
+   "tokens_in": 1850,
+   "tokens_out": 2896,
+   "cached_in": 0,
+   "cost_usd": 0.010538,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 8.053045456000007,
+   "tokens_in": 1822,
+   "tokens_out": 1468,
+   "cached_in": 0,
+   "cost_usd": 0.006226,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 8.442786062000039,
+   "tokens_in": 1739,
+   "tokens_out": 2065,
+   "cached_in": 0,
+   "cost_usd": 0.007934,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 7.8467481629999725,
+   "tokens_in": 1847,
+   "tokens_out": 2017,
+   "cached_in": 0,
+   "cost_usd": 0.007898,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 12.229690490999985,
+   "tokens_in": 1861,
+   "tokens_out": 3504,
+   "cached_in": 0,
+   "cost_usd": 0.012373,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 10.223478679999971,
+   "tokens_in": 1755,
+   "tokens_out": 2818,
+   "cached_in": 0,
+   "cost_usd": 0.010209,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 13.14246179700001,
+   "tokens_in": 1833,
+   "tokens_out": 3569,
+   "cached_in": 0,
+   "cost_usd": 0.01254,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 8.009912777000011,
+   "tokens_in": 1825,
+   "tokens_out": 2331,
+   "cached_in": 0,
+   "cost_usd": 0.008818,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 9.969750337999983,
+   "tokens_in": 1739,
+   "tokens_out": 2323,
+   "cached_in": 0,
+   "cost_usd": 0.008708,
+   "purpose": "routing baseline (ultra)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 5.485953498000015,
+   "tokens_in": 1750,
+   "tokens_out": 1213,
+   "cached_in": 0,
+   "cost_usd": 0.00039612,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 3.23861438900002,
+   "tokens_in": 1749,
+   "tokens_out": 637,
+   "cached_in": 0,
+   "cost_usd": 0.00025781999999999997,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 4.210415825000041,
+   "tokens_in": 1853,
+   "tokens_out": 1021,
+   "cached_in": 0,
+   "cost_usd": 0.00035622,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 6.72716976800001,
+   "tokens_in": 1794,
+   "tokens_out": 1485,
+   "cached_in": 0,
+   "cost_usd": 0.00046404,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 3.350099225000008,
+   "tokens_in": 1792,
+   "tokens_out": 773,
+   "cached_in": 0,
+   "cost_usd": 0.00029303999999999995,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 4.643447895999998,
+   "tokens_in": 1740,
+   "tokens_out": 1238,
+   "cached_in": 0,
+   "cost_usd": 0.00040152,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 12.31484982500001,
+   "tokens_in": 1766,
+   "tokens_out": 3939,
+   "cached_in": 0,
+   "cost_usd": 0.00105132,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 13.908855696999979,
+   "tokens_in": 1846,
+   "tokens_out": 4000,
+   "cached_in": 0,
+   "cost_usd": 0.00107076,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 10.02506763599996,
+   "tokens_in": 1846,
+   "tokens_out": 2710,
+   "cached_in": 0,
+   "cost_usd": 0.00076116,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 5.755004181999993,
+   "tokens_in": 1822,
+   "tokens_out": 1606,
+   "cached_in": 0,
+   "cost_usd": 0.00049476,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 2.703509118999989,
+   "tokens_in": 1740,
+   "tokens_out": 710,
+   "cached_in": 0,
+   "cost_usd": 0.0002748,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 4.884464311999977,
+   "tokens_in": 1771,
+   "tokens_out": 1258,
+   "cached_in": 0,
+   "cost_usd": 0.00040818,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 9.912703662000013,
+   "tokens_in": 1914,
+   "tokens_out": 2951,
+   "cached_in": 0,
+   "cost_usd": 0.00082308,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 4.056598209000015,
+   "tokens_in": 1833,
+   "tokens_out": 894,
+   "cached_in": 0,
+   "cost_usd": 0.00032453999999999995,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 8.040565722999986,
+   "tokens_in": 1807,
+   "tokens_out": 2146,
+   "cached_in": 0,
+   "cost_usd": 0.0006234599999999999,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 6.917458212999975,
+   "tokens_in": 1778,
+   "tokens_out": 1725,
+   "cached_in": 0,
+   "cost_usd": 0.0005206799999999999,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 8.76277815200001,
+   "tokens_in": 1752,
+   "tokens_out": 2534,
+   "cached_in": 0,
+   "cost_usd": 0.00071328,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 9.501610839000023,
+   "tokens_in": 1835,
+   "tokens_out": 2580,
+   "cached_in": 0,
+   "cost_usd": 0.0007293,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 5.312141971000017,
+   "tokens_in": 1751,
+   "tokens_out": 1586,
+   "cached_in": 0,
+   "cost_usd": 0.0004857,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 9.600639994000005,
+   "tokens_in": 1752,
+   "tokens_out": 2780,
+   "cached_in": 0,
+   "cost_usd": 0.00077232,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 5.6809326729999725,
+   "tokens_in": 1751,
+   "tokens_out": 1473,
+   "cached_in": 0,
+   "cost_usd": 0.00045858,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 6.459003811000002,
+   "tokens_in": 1796,
+   "tokens_out": 1802,
+   "cached_in": 0,
+   "cost_usd": 0.00054024,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 8.535234387000003,
+   "tokens_in": 1768,
+   "tokens_out": 1964,
+   "cached_in": 0,
+   "cost_usd": 0.0005774399999999999,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 6.358203219000018,
+   "tokens_in": 1824,
+   "tokens_out": 1673,
+   "cached_in": 0,
+   "cost_usd": 0.00051096,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 4.313241593999976,
+   "tokens_in": 1740,
+   "tokens_out": 1124,
+   "cached_in": 0,
+   "cost_usd": 0.00037415999999999995,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 4.728541224999958,
+   "tokens_in": 1928,
+   "tokens_out": 1437,
+   "cached_in": 0,
+   "cost_usd": 0.00046056,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 11.867663590999996,
+   "tokens_in": 1907,
+   "tokens_out": 3203,
+   "cached_in": 0,
+   "cost_usd": 0.00088314,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 5.838518770999997,
+   "tokens_in": 1769,
+   "tokens_out": 1623,
+   "cached_in": 0,
+   "cost_usd": 0.00049566,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 6.724696576000042,
+   "tokens_in": 1845,
+   "tokens_out": 1627,
+   "cached_in": 0,
+   "cost_usd": 0.0005011799999999999,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 8.688331038000001,
+   "tokens_in": 1767,
+   "tokens_out": 1671,
+   "cached_in": 0,
+   "cost_usd": 0.0005070599999999999,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 3.481040603999986,
+   "tokens_in": 1772,
+   "tokens_out": 898,
+   "cached_in": 0,
+   "cost_usd": 0.00032184,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 8.36194252100006,
+   "tokens_in": 1823,
+   "tokens_out": 2011,
+   "cached_in": 0,
+   "cost_usd": 0.00059202,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 4.698088193999979,
+   "tokens_in": 1768,
+   "tokens_out": 1418,
+   "cached_in": 0,
+   "cost_usd": 0.00044639999999999995,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 3.817584549000003,
+   "tokens_in": 1846,
+   "tokens_out": 988,
+   "cached_in": 0,
+   "cost_usd": 0.00034788,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 4.6776864149999255,
+   "tokens_in": 1822,
+   "tokens_out": 1232,
+   "cached_in": 0,
+   "cost_usd": 0.000405,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 10.30034561399998,
+   "tokens_in": 1742,
+   "tokens_out": 3022,
+   "cached_in": 0,
+   "cost_usd": 0.0008298,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 4.8260397600000715,
+   "tokens_in": 1846,
+   "tokens_out": 1490,
+   "cached_in": 0,
+   "cost_usd": 0.00046835999999999997,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 4.318656123999972,
+   "tokens_in": 1767,
+   "tokens_out": 1400,
+   "cached_in": 0,
+   "cost_usd": 0.00044202,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 4.470906486999979,
+   "tokens_in": 1850,
+   "tokens_out": 1332,
+   "cached_in": 0,
+   "cost_usd": 0.00043068,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 6.1004778860000215,
+   "tokens_in": 1822,
+   "tokens_out": 1774,
+   "cached_in": 0,
+   "cost_usd": 0.00053508,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 6.522010178000073,
+   "tokens_in": 1739,
+   "tokens_out": 1918,
+   "cached_in": 0,
+   "cost_usd": 0.0005646599999999999,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 5.409677666000107,
+   "tokens_in": 1847,
+   "tokens_out": 1714,
+   "cached_in": 0,
+   "cost_usd": 0.0005221799999999999,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 9.48605665399998,
+   "tokens_in": 1861,
+   "tokens_out": 2518,
+   "cached_in": 0,
+   "cost_usd": 0.00071598,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 7.690397428999972,
+   "tokens_in": 1755,
+   "tokens_out": 2370,
+   "cached_in": 0,
+   "cost_usd": 0.0006741,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 14.999330650000047,
+   "tokens_in": 1833,
+   "tokens_out": 3478,
+   "cached_in": 0,
+   "cost_usd": 0.0009446999999999999,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 8.831544716000053,
+   "tokens_in": 1825,
+   "tokens_out": 1785,
+   "cached_in": 0,
+   "cost_usd": 0.0005379,
+   "purpose": "routing baseline (nano)"
+  },
+  {
+   "role": "nano",
+   "model_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+   "seconds": 6.5348561490000066,
+   "tokens_in": 1739,
+   "tokens_out": 1513,
+   "cached_in": 0,
+   "cost_usd": 0.00046746,
+   "purpose": "routing baseline (nano)"
+  }
+ ],
  "forms": {
   "n": 30,
   "field_accuracy": {
@@ -104,142 +1037,711 @@
    "0.5": 0.4,
    "0.9": 0.5
   },
-  "avg_seconds": 1.89,
-  "cost_usd": 0.0228
+  "avg_seconds": 1.82,
+  "cost_usd": 0.0228,
+  "rows": [
+   {
+    "file": "form_00.jpg",
+    "strength": 0.2,
+    "all_correct": false,
+    "wrong": {
+     "entry_number": [
+      "K4M-1380343-1",
+      "K4M-1383043-1"
+     ],
+     "entry_date": [
+      "05/07/2025",
+      "05/01/2025"
+     ]
+    },
+    "seconds": 1.97,
+    "cost_usd": 0.00083
+   },
+   {
+    "file": "form_01.jpg",
+    "strength": 0.5,
+    "all_correct": true,
+    "wrong": {},
+    "seconds": 1.83,
+    "cost_usd": 0.00076
+   },
+   {
+    "file": "form_02.jpg",
+    "strength": 0.9,
+    "all_correct": true,
+    "wrong": {},
+    "seconds": 1.64,
+    "cost_usd": 0.00076
+   },
+   {
+    "file": "form_03.jpg",
+    "strength": 0.2,
+    "all_correct": false,
+    "wrong": {
+     "entry_date": [
+      "12/18/2025",
+      "12/13/2025"
+     ]
+    },
+    "seconds": 1.76,
+    "cost_usd": 0.00076
+   },
+   {
+    "file": "form_04.jpg",
+    "strength": 0.5,
+    "all_correct": true,
+    "wrong": {},
+    "seconds": 1.61,
+    "cost_usd": 0.00075
+   },
+   {
+    "file": "form_05.jpg",
+    "strength": 0.9,
+    "all_correct": true,
+    "wrong": {},
+    "seconds": 1.94,
+    "cost_usd": 0.00076
+   },
+   {
+    "file": "form_06.jpg",
+    "strength": 0.2,
+    "all_correct": false,
+    "wrong": {
+     "entry_date": [
+      "08/22/2025",
+      "08/18/2025"
+     ]
+    },
+    "seconds": 1.64,
+    "cost_usd": 0.00075
+   },
+   {
+    "file": "form_07.jpg",
+    "strength": 0.5,
+    "all_correct": false,
+    "wrong": {
+     "entry_date": [
+      "12/30/2025",
+      "12/24/2025"
+     ]
+    },
+    "seconds": 1.76,
+    "cost_usd": 0.00068
+   },
+   {
+    "file": "form_08.jpg",
+    "strength": 0.9,
+    "all_correct": true,
+    "wrong": {},
+    "seconds": 1.77,
+    "cost_usd": 0.00083
+   },
+   {
+    "file": "form_09.jpg",
+    "strength": 0.2,
+    "all_correct": false,
+    "wrong": {
+     "entry_date": [
+      "10/01/2025",
+      "09/24/2025"
+     ]
+    },
+    "seconds": 1.84,
+    "cost_usd": 0.00076
+   },
+   {
+    "file": "form_10.jpg",
+    "strength": 0.5,
+    "all_correct": false,
+    "wrong": {},
+    "seconds": 2.05,
+    "cost_usd": 0.00082
+   },
+   {
+    "file": "form_11.jpg",
+    "strength": 0.9,
+    "all_correct": false,
+    "wrong": {
+     "importer_number": [
+      "00-4417730Z",
+      "00-4417730ZZ"
+     ]
+    },
+    "seconds": 2.01,
+    "cost_usd": 0.00083
+   },
+   {
+    "file": "form_12.jpg",
+    "strength": 0.2,
+    "all_correct": false,
+    "wrong": {
+     "entry_number": [
+      "K4M-970955-0",
+      "K4M-9705955-0"
+     ]
+    },
+    "seconds": 1.67,
+    "cost_usd": 0.00076
+   },
+   {
+    "file": "form_13.jpg",
+    "strength": 0.5,
+    "all_correct": false,
+    "wrong": {
+     "entry_number": [
+      "T2R-236315-9",
+      "T2R-2236315-9"
+     ]
+    },
+    "seconds": 1.84,
+    "cost_usd": 0.00075
+   },
+   {
+    "file": "form_14.jpg",
+    "strength": 0.9,
+    "all_correct": false,
+    "wrong": {
+     "entry_number": [
+      "07Z-9282044-7",
+      "Q7Z-9282044-7"
+     ]
+    },
+    "seconds": 1.84,
+    "cost_usd": 0.00076
+   },
+   {
+    "file": "form_15.jpg",
+    "strength": 0.2,
+    "all_correct": false,
+    "wrong": {
+     "importer_number": [
+      "00-441730ZZ",
+      "00-4417730ZZ"
+     ]
+    },
+    "seconds": 1.84,
+    "cost_usd": 0.00068
+   },
+   {
+    "file": "form_16.jpg",
+    "strength": 0.5,
+    "all_correct": true,
+    "wrong": {},
+    "seconds": 1.63,
+    "cost_usd": 0.00069
+   },
+   {
+    "file": "form_17.jpg",
+    "strength": 0.9,
+    "all_correct": false,
+    "wrong": {
+     "entry_number": [
+      "07Z-2042408-0",
+      "Q7Z-2042408-0"
+     ]
+    },
+    "seconds": 1.82,
+    "cost_usd": 0.00075
+   },
+   {
+    "file": "form_18.jpg",
+    "strength": 0.2,
+    "all_correct": false,
+    "wrong": {
+     "entry_number": [
+      "07Z-1292880-9",
+      "Q7Z-1292880-9"
+     ],
+     "entry_date": [
+      "12/03/2025",
+      "11/28/2025"
+     ]
+    },
+    "seconds": 1.85,
+    "cost_usd": 0.00076
+   },
+   {
+    "file": "form_19.jpg",
+    "strength": 0.5,
+    "all_correct": false,
+    "wrong": {
+     "entry_number": [
+      "07Z-6592136-2",
+      "Q7Z-6592136-2"
+     ]
+    },
+    "seconds": 1.78,
+    "cost_usd": 0.00083
+   },
+   {
+    "file": "form_20.jpg",
+    "strength": 0.9,
+    "all_correct": false,
+    "wrong": {
+     "entry_number": [
+      "K4M-295968-7",
+      "K4M-2953968-7"
+     ]
+    },
+    "seconds": 2.44,
+    "cost_usd": 0.00083
+   },
+   {
+    "file": "form_21.jpg",
+    "strength": 0.2,
+    "all_correct": false,
+    "wrong": {
+     "entry_date": [
+      "10/24/2025",
+      "10/19/2025"
+     ]
+    },
+    "seconds": 1.86,
+    "cost_usd": 0.00068
+   },
+   {
+    "file": "form_22.jpg",
+    "strength": 0.5,
+    "all_correct": true,
+    "wrong": {},
+    "seconds": 1.67,
+    "cost_usd": 0.00076
+   },
+   {
+    "file": "form_23.jpg",
+    "strength": 0.9,
+    "all_correct": true,
+    "wrong": {},
+    "seconds": 1.7,
+    "cost_usd": 0.00068
+   },
+   {
+    "file": "form_24.jpg",
+    "strength": 0.2,
+    "all_correct": false,
+    "wrong": {
+     "entry_date": [
+      "10/11/2025",
+      "10/06/2025"
+     ]
+    },
+    "seconds": 1.72,
+    "cost_usd": 0.00069
+   },
+   {
+    "file": "form_25.jpg",
+    "strength": 0.5,
+    "all_correct": false,
+    "wrong": {
+     "entry_number": [
+      "M4M-1898260-9",
+      "K4M-1898260-9"
+     ]
+    },
+    "seconds": 1.79,
+    "cost_usd": 0.00082
+   },
+   {
+    "file": "form_26.jpg",
+    "strength": 0.9,
+    "all_correct": false,
+    "wrong": {
+     "entry_number": [
+      "072-653015-2",
+      "Q7Z-6523015-2"
+     ]
+    },
+    "seconds": 1.84,
+    "cost_usd": 0.00075
+   },
+   {
+    "file": "form_27.jpg",
+    "strength": 0.2,
+    "all_correct": false,
+    "wrong": {
+     "entry_date": [
+      "10/08/2025",
+      "10/03/2025"
+     ]
+    },
+    "seconds": 1.83,
+    "cost_usd": 0.00075
+   },
+   {
+    "file": "form_28.jpg",
+    "strength": 0.5,
+    "all_correct": false,
+    "wrong": {
+     "entry_number": [
+      "072-3954911-7",
+      "Q7Z-3954911-7"
+     ]
+    },
+    "seconds": 1.84,
+    "cost_usd": 0.00075
+   },
+   {
+    "file": "form_29.jpg",
+    "strength": 0.9,
+    "all_correct": true,
+    "wrong": {},
+    "seconds": 1.8,
+    "cost_usd": 0.00083
+   }
+  ]
  },
  "offers": {
   "n": 20,
-  "verdict_accuracy": 0.1,
-  "scams_caught": "1/10",
-  "legit_flagged_as_scam": "8/10",
-  "red_flag_recall": 0.2,
+  "live": {
+   "verdict_accuracy": 0.45,
+   "scams_caught": "9/10",
+   "legit_flagged_as_scam": "10/10"
+  },
+  "fallback": {
+   "verdict_accuracy": 0.8,
+   "scams_caught": "8/10",
+   "legit_flagged_as_scam": "1/10"
+  },
+  "red_flag_recall": 0.68,
+  "errors": 1,
   "rows": [
    {
     "file": "offer_00.txt",
     "expected": "likely_scam",
-    "got": "reasonable"
+    "flags_expected": [
+     "claims_to_be_cbp_or_government",
+     "asks_for_ace_login",
+     "urgency_pressure"
+    ],
+    "got": "likely_scam",
+    "flags_got": [
+     "asks_for_ace_login",
+     "claims_to_be_cbp_or_government",
+     "unsolicited_contact"
+    ],
+    "error": "",
+    "dropped_unquoted": 0,
+    "fallback": "likely_scam"
    },
    {
     "file": "offer_01.txt",
     "expected": "likely_scam",
-    "got": "ERR"
+    "flags_expected": [
+     "asks_for_bank_details",
+     "upfront_payment",
+     "urgency_pressure"
+    ],
+    "got": "likely_scam",
+    "flags_got": [
+     "asks_for_bank_details"
+    ],
+    "error": "",
+    "dropped_unquoted": 0,
+    "fallback": "likely_scam"
    },
    {
     "file": "offer_02.txt",
     "expected": "likely_scam",
-    "got": "ERR"
+    "flags_expected": [
+     "urgency_pressure",
+     "qr_code_or_link_to_pay"
+    ],
+    "got": "likely_scam",
+    "flags_got": [
+     "unsolicited_contact",
+     "urgency_pressure"
+    ],
+    "error": "",
+    "dropped_unquoted": 0,
+    "fallback": "likely_scam"
    },
    {
     "file": "offer_03.txt",
     "expected": "likely_scam",
-    "got": "ERR"
+    "flags_expected": [
+     "guarantees_refund",
+     "processes_refunds_outside_ace",
+     "upfront_payment"
+    ],
+    "got": "likely_scam",
+    "flags_got": [
+     "guarantees_refund",
+     "processes_refunds_outside_ace",
+     "upfront_payment"
+    ],
+    "error": "",
+    "dropped_unquoted": 0,
+    "fallback": "likely_scam"
    },
    {
     "file": "offer_04.txt",
     "expected": "likely_scam",
-    "got": "ERR"
+    "flags_expected": [
+     "claims_to_be_cbp_or_government",
+     "asks_for_bank_details"
+    ],
+    "got": "likely_scam",
+    "flags_got": [
+     "asks_for_ace_login",
+     "asks_for_bank_details",
+     "claims_to_be_cbp_or_government",
+     "processes_refunds_outside_ace",
+     "unsolicited_contact"
+    ],
+    "error": "",
+    "dropped_unquoted": 0,
+    "fallback": "likely_scam"
    },
    {
     "file": "offer_05.txt",
     "expected": "likely_scam",
-    "got": "likely_scam"
+    "flags_expected": [
+     "urgency_pressure",
+     "asks_for_ace_login"
+    ],
+    "got": "likely_scam",
+    "flags_got": [
+     "asks_for_ace_login",
+     "unsolicited_contact",
+     "upfront_payment",
+     "urgency_pressure"
+    ],
+    "error": "",
+    "dropped_unquoted": 0,
+    "fallback": "likely_scam"
    },
    {
     "file": "offer_06.txt",
     "expected": "likely_scam",
-    "got": "ERR"
+    "flags_expected": [
+     "qr_code_or_link_to_pay",
+     "asks_for_bank_details"
+    ],
+    "got": "likely_scam",
+    "flags_got": [
+     "asks_for_ace_login",
+     "asks_for_bank_details",
+     "claims_to_be_cbp_or_government",
+     "unsolicited_contact"
+    ],
+    "error": "",
+    "dropped_unquoted": 1,
+    "fallback": "reasonable"
    },
    {
     "file": "offer_07.txt",
     "expected": "likely_scam",
-    "got": "ERR"
+    "flags_expected": [
+     "upfront_payment",
+     "guarantees_refund",
+     "processes_refunds_outside_ace"
+    ],
+    "got": "ERR",
+    "flags_got": [],
+    "error": "LiveModelUnavailable: nvidia/Nemotron-3-Ultra-550b-a55b returned no valid JSON",
+    "dropped_unquoted": 0,
+    "fallback": "reasonable"
    },
    {
     "file": "offer_08.txt",
     "expected": "likely_scam",
-    "got": "ERR"
+    "flags_expected": [
+     "upfront_payment",
+     "urgency_pressure"
+    ],
+    "got": "likely_scam",
+    "flags_got": [
+     "unsolicited_contact",
+     "upfront_payment",
+     "urgency_pressure"
+    ],
+    "error": "",
+    "dropped_unquoted": 0,
+    "fallback": "likely_scam"
    },
    {
     "file": "offer_09.txt",
     "expected": "likely_scam",
-    "got": "ERR"
+    "flags_expected": [
+     "claims_to_be_cbp_or_government",
+     "asks_for_ace_login",
+     "guarantees_refund"
+    ],
+    "got": "likely_scam",
+    "flags_got": [
+     "asks_for_ace_login",
+     "claims_to_be_cbp_or_government",
+     "guarantees_refund",
+     "upfront_payment"
+    ],
+    "error": "",
+    "dropped_unquoted": 0,
+    "fallback": "likely_scam"
    },
    {
     "file": "offer_10.txt",
     "expected": "reasonable",
-    "got": "likely_scam"
+    "flags_expected": [],
+    "got": "likely_scam",
+    "flags_got": [
+     "claims_to_be_cbp_or_government",
+     "unsolicited_contact",
+     "upfront_payment"
+    ],
+    "error": "",
+    "dropped_unquoted": 0,
+    "fallback": "likely_scam"
    },
    {
     "file": "offer_11.txt",
     "expected": "reasonable",
-    "got": "likely_scam"
+    "flags_expected": [],
+    "got": "likely_scam",
+    "flags_got": [
+     "claims_to_be_cbp_or_government",
+     "unsolicited_contact"
+    ],
+    "error": "",
+    "dropped_unquoted": 6,
+    "fallback": "reasonable"
    },
    {
     "file": "offer_12.txt",
     "expected": "reasonable",
-    "got": "likely_scam"
+    "flags_expected": [],
+    "got": "likely_scam",
+    "flags_got": [
+     "unsolicited_contact",
+     "upfront_payment"
+    ],
+    "error": "",
+    "dropped_unquoted": 0,
+    "fallback": "reasonable"
    },
    {
     "file": "offer_13.txt",
     "expected": "reasonable",
-    "got": "reasonable"
+    "flags_expected": [],
+    "got": "likely_scam",
+    "flags_got": [
+     "asks_for_ace_login"
+    ],
+    "error": "",
+    "dropped_unquoted": 2,
+    "fallback": "reasonable"
    },
    {
     "file": "offer_14.txt",
     "expected": "reasonable",
-    "got": "ERR"
+    "flags_expected": [],
+    "got": "likely_scam",
+    "flags_got": [
+     "claims_to_be_cbp_or_government",
+     "unsolicited_contact",
+     "upfront_payment"
+    ],
+    "error": "",
+    "dropped_unquoted": 6,
+    "fallback": "reasonable"
    },
    {
     "file": "offer_15.txt",
     "expected": "expensive",
-    "got": "likely_scam"
+    "flags_expected": [],
+    "got": "likely_scam",
+    "flags_got": [
+     "unsolicited_contact",
+     "upfront_payment"
+    ],
+    "error": "",
+    "dropped_unquoted": 0,
+    "fallback": "expensive"
    },
    {
     "file": "offer_16.txt",
     "expected": "expensive",
-    "got": "likely_scam"
+    "flags_expected": [],
+    "got": "likely_scam",
+    "flags_got": [
+     "asks_for_ace_login",
+     "asks_for_bank_details",
+     "claims_to_be_cbp_or_government",
+     "guarantees_refund",
+     "unsolicited_contact",
+     "upfront_payment"
+    ],
+    "error": "",
+    "dropped_unquoted": 2,
+    "fallback": "expensive"
    },
    {
     "file": "offer_17.txt",
     "expected": "expensive",
-    "got": "likely_scam"
+    "flags_expected": [],
+    "got": "likely_scam",
+    "flags_got": [
+     "asks_for_ace_login",
+     "guarantees_refund",
+     "unsolicited_contact",
+     "upfront_payment"
+    ],
+    "error": "",
+    "dropped_unquoted": 0,
+    "fallback": "reasonable"
    },
    {
     "file": "offer_18.txt",
     "expected": "reasonable",
-    "got": "likely_scam"
+    "flags_expected": [],
+    "got": "likely_scam",
+    "flags_got": [
+     "guarantees_refund",
+     "unsolicited_contact",
+     "upfront_payment"
+    ],
+    "error": "",
+    "dropped_unquoted": 0,
+    "fallback": "reasonable"
    },
    {
     "file": "offer_19.txt",
     "expected": "reasonable",
-    "got": "likely_scam"
+    "flags_expected": [],
+    "got": "likely_scam",
+    "flags_got": [
+     "unsolicited_contact",
+     "upfront_payment"
+    ],
+    "error": "",
+    "dropped_unquoted": 0,
+    "fallback": "reasonable"
    }
   ]
  },
  "tiers": {
   "nano": {
    "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
-   "calls": 46,
-   "avg_seconds": 17.52,
-   "avg_tokens_in": 1799,
-   "avg_tokens_out": 1720,
-   "cost_usd": 0.024
+   "calls": 47,
+   "avg_seconds": 6.87,
+   "avg_tokens_in": 1800,
+   "avg_tokens_out": 1834,
+   "cost_usd": 0.0258
   },
   "super_vl": {
    "model": "nvidia/Nemotron-3.5-Super-VL",
    "calls": 30,
-   "avg_seconds": 1.89,
+   "avg_seconds": 1.82,
    "avg_tokens_in": 1607,
    "avg_tokens_out": 308,
    "cost_usd": 0.0228
   },
   "ultra": {
    "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-   "calls": 66,
+   "calls": 68,
    "avg_seconds": 5.93,
-   "avg_tokens_in": 1317,
-   "avg_tokens_out": 2082,
-   "cost_usd": 0.4992
+   "avg_tokens_in": 1306,
+   "avg_tokens_out": 1809,
+   "cost_usd": 0.458
   }
  }
 }
