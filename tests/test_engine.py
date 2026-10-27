@@ -143,13 +143,17 @@ def test_recon_flagged_and_psc():
 
 
 def test_informal_entry_liquidates_at_payment():
+    # Liquidated on payment (19 CFR 159.10), but that date is inferred, not read from ACE: R16 "confirm in ACE", not court-only.
     r = route(entry_type="11", entry_date=date(2025, 8, 1), deposit_date=date(2025, 8, 1))
-    assert r.rule_id == "R14" and any("Informal" in n for n in r.notes)
+    assert r.rule_id == "R16" and r.bucket == "review" and any("Informal" in n for n in r.notes)
+    # With the liquidation date from ACE, the normal windows apply.
+    r = route(entry_type="11", entry_date=date(2025, 8, 1), liquidation_status="Liquidated", liquidation_date=date(2025, 8, 1))
+    assert r.rule_id == "R14"
 
 
 def test_unknown_liquidation_estimated_and_flagged():
-    r = route(entry_date=date(2025, 3, 1))  # +314 days -> liquidated ~Jan 2026 (estimated)
-    assert r.liquidation_estimated and r.rule_id == "R14"
+    r = route(entry_date=date(2025, 3, 1))  # +314 days -> liquidated ~Jan 2026 (estimated): confirm, don't say court-only
+    assert r.liquidation_estimated and r.rule_id == "RX" and r.bucket == "review" and r.deadline is None
     r = route(entry_date=date(2026, 1, 15))  # +314 days is in the future -> unliquidated
     assert r.rule_id == "R11" and not r.liquidation_estimated
 

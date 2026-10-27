@@ -1,14 +1,43 @@
 name: Build demo cache (live models)
-# Actions tab → "Build demo cache (live models)" → Run workflow. Costs a few cents.
-on: workflow_dispatch
+# Re-records the sample importer's model outputs (3 photo reads, action plan, explanations, offer check, news check)
+# in data/sample/demo_cache.json. Costs a few cents. Two ways to run it:
+#   - Actions tab -> "Build demo cache (live models)" -> Run workflow
+#   - commit a change to .github/requests/demo-cache.json, e.g. {"note": "refresh after the Oct 27 rule changes"}
+# The request file is read by Python, never pasted into a shell command.
+on:
+  push:
+    paths: [".github/requests/demo-cache.json"]
+  workflow_dispatch:
+    inputs:
+      note: { description: "Why this run (shown in the run summary)", required: false, default: "" }
 permissions:
   contents: write
+concurrency:
+  group: demo-cache
+  cancel-in-progress: false
 jobs:
   cache:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+      - name: Which run
+        env:
+          EVENT: ${{ github.event_name }}
+          IN_NOTE: ${{ inputs.note }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          note = os.environ.get("IN_NOTE", "")
+          if os.environ["EVENT"] == "push":
+              try:
+                  note = str(json.load(open(".github/requests/demo-cache.json")).get("note", ""))
+              except Exception as e:  # a malformed request still rebuilds the cache
+                  note = f"(couldn't read the request file: {type(e).__name__})"
+          note = " ".join(note.split())[:300]
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
+              f.write(f"Demo cache rebuild ({os.environ['EVENT']}). {note}\n")
+          PY
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
       - run: pip install -r requirements.txt
@@ -16,7 +45,13 @@ jobs:
         env:
           NEBIUS_API_KEY: ${{ secrets.NEBIUS_API_KEY }}
           TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
-        run: python -m scripts.build_demo_cache
+          PYTHONUNBUFFERED: "1"
+        run: |
+          set -o pipefail
+          python -m scripts.build_demo_cache 2>&1 | tee build_log.txt
+          tail -25 build_log.txt >> "$GITHUB_STEP_SUMMARY"
+      - name: Tests still pass with the new cache
+        run: python -m pytest -q
       - name: Commit cache
         run: |
           git config user.name "github-actions[bot]"

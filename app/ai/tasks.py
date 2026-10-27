@@ -181,7 +181,8 @@ def _ledger_brief(report: dict) -> dict:
         ][:60],
         "urgent_entries": [
             {k: r[k] for k in ("entry_number", "principal", "deadline", "days_left")}
-            for r in report["routes"] if r["deadline_type"] == "CAPE_80" and r["days_left"] is not None and r["days_left"] <= 21
+            for r in report["routes"] if r["bucket"] in {"cape_now", "fix_first"} and r["holder"] == "you"
+            and r["deadline_type"] == "CAPE_80" and r["days_left"] is not None and 0 <= r["days_left"] <= 21
         ],
     }
 

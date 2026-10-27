@@ -21,6 +21,7 @@ from app.engine import catalog as C
 from app.engine import entry_number as EN
 from app.engine.es003 import parse_csv, parse_date, parse_money
 from app.engine.models import Entry, Line, Profile
+from app.engine.plan_check import check_plan
 
 ROOT = Path(__file__).resolve().parent.parent
 STATIC = Path(__file__).resolve().parent / "static"
@@ -61,18 +62,38 @@ def _demo_cache() -> dict:
         return {}
 
 
+def _num(x) -> float | None:
+    try:
+        return float(x)
+    except (TypeError, ValueError):
+        return None
+
+
 def form_to_entry(form: dict, source_name: str) -> Entry:
-    lines = []
+    lines, unparsed = [], {}
     for ln in form.get("lines", []):
         hts, duties = ln.get("hts_numbers", []), ln.get("duties", [])
         for i, h in enumerate(hts):
-            lines.append(Line(line_no=ln.get("line_no", ""), hts=h, duty=float(duties[i]) if i < len(duties) else 0.0))
+            d = _num(duties[i]) if i < len(duties) else 0.0
+            if d is None:
+                unparsed[f"duty (line {ln.get('line_no', '')} {h})"] = str(duties[i])
+            lines.append(Line(line_no=ln.get("line_no", ""), hts=h, duty=d or 0.0))
+    raw_date = str(form.get("entry_date") or "").strip()
+    entry_date = parse_date(raw_date)
+    if raw_date and entry_date is None:
+        unparsed["entry_date"] = raw_date
+    check = form.get("duty_check") or {}
     return Entry(
         entry_number=form.get("entry_number", ""), entry_type=(form.get("entry_type") or "01")[:2],
-        entry_date=parse_date(form.get("entry_date", "")), lines=lines,
+        entry_date=entry_date, lines=lines,
         importer_number=form.get("importer_number", ""), importer_name=form.get("importer_name", ""),
-        country_of_origin=form.get("country_of_origin", ""), source=f"photo:{source_name}",
+        country_of_origin=form.get("country_of_origin", ""), source=f"photo:{source_name}", unparsed=unparsed,
+        duty_mismatch=(check["lines_sum"], check["block_37"]) if check.get("ok") is False else None,
     )
+
+
+def _yes(v) -> bool:
+    return v.strip().lower() in {"true", "yes", "y", "1"} if isinstance(v, str) else bool(v)
 
 
 def _profile(raw: str) -> Profile:
@@ -80,15 +101,17 @@ def _profile(raw: str) -> Profile:
         d = json.loads(raw or "{}")
     except json.JSONDecodeError:
         d = {}
-    tri = lambda v: None if v in (None, "", "unknown") else bool(v)
+    if not isinstance(d, dict):
+        d = {}
+    tri = lambda v: None if v in (None, "", "unknown") else _yes(v)
     return Profile(
         importer_number=str(d.get("importer_number", "")),
         has_ace_account=tri(d.get("has_ace_account")),
         ach_refund_enrolled=tri(d.get("ach_refund_enrolled")),
         contact_email_current=tri(d.get("contact_email_current")),
-        cit_plaintiff=bool(d.get("cit_plaintiff", False)),
-        plaintiff_ior_submitted_by_cutoff=bool(d.get("plaintiff_ior_submitted_by_cutoff", False)),
-        corporate=bool(d.get("corporate", True)),
+        cit_plaintiff=_yes(d.get("cit_plaintiff", False)),
+        plaintiff_ior_submitted_by_cutoff=_yes(d.get("plaintiff_ior_submitted_by_cutoff", False)),
+        corporate=_yes(d.get("corporate", True)),
         filer=str(d.get("filer", "broker")),
     )
 
@@ -107,22 +130,29 @@ def health():
 
 
 # --- analysis ----------------------------------------------------------------------------
+def _read_upload(f: UploadFile, what: str) -> bytes:
+    data = f.file.read(MAX_UPLOAD + 1)
+    if len(data) > MAX_UPLOAD:
+        raise HTTPException(413, f"{what} is too large (15 MB max).")
+    return data
+
+
 @app.post("/api/analyze")
-async def analyze_upload(
+def analyze_upload(
     profile: str = Form("{}"),
     csv_file: UploadFile | None = File(None),
     photos: list[UploadFile] | None = File(None),
 ):
+    # A plain `def`: FastAPI runs it in a worker thread, so the blocking model calls (and a big CSV) don't stall
+    # every other visitor's requests while one upload is being read.
     calls: list[CallRecord] = []
     steps: list[dict] = []
     entries: list[Entry] = []
     review_grid: list[dict] = []
+    extra_blockers: list[dict] = []
 
     if csv_file is not None and csv_file.filename:
-        raw = await csv_file.read()
-        if len(raw) > MAX_UPLOAD:
-            raise HTTPException(413, "File too large (15 MB max).")
-        text = raw.decode("utf-8-sig", errors="replace")
+        text = _read_upload(csv_file, "The file").decode("utf-8-sig", errors="replace")
         parsed, info = parse_csv(text)
         step = {"step": "Read your spreadsheet", "detail": f"{info['rows']} rows", "model": None}
         if info["missing"]:
@@ -136,37 +166,48 @@ async def analyze_upload(
                 raise HTTPException(422, f"Couldn't find these columns: {', '.join(info['missing'])}. Use an ACE ES-003 export.")
             if info["missing"]:
                 raise HTTPException(422, f"Couldn't find these columns: {', '.join(info['missing'])}.")
+        if info.get("unparsed"):
+            step["detail"] += f" · {info['unparsed']} with dates or amounts we couldn't read"
         entries += parsed
         steps.append(step | {"count": len(parsed)})
 
     known_filers = {EN.normalize(e.entry_number)[:3] for e in entries if len(EN.normalize(e.entry_number)) == 11}
+    skipped = 0
     for ph in photos or []:
         if not ph.filename:
             continue
-        data = await ph.read()
-        if len(data) > MAX_UPLOAD:
-            raise HTTPException(413, f"{ph.filename} is too large.")
+        data = _read_upload(ph, ph.filename)
+        mime = ph.content_type or "image/jpeg"
         try:
-            form = tasks.read_form(data, ph.content_type or "image/jpeg", calls)
+            form = tasks.read_form(data, mime, calls)
         except LiveModelUnavailable:
-            raise HTTPException(503, "Reading photos needs the AI service, which isn't available right now. Try the CSV path or the sample.")
+            if not entries:
+                raise HTTPException(503, "Reading photos needs the AI service, which isn't available right now. Try the CSV path or the sample.")
+            skipped += 1  # keep the spreadsheet result rather than failing the whole upload
+            continue
         form, changed = _checked_form(form, known_filers)
         if EN.validate(form.get("entry_number", "")):  # still fails the check digit: one focused second look
             try:
-                again, changed2 = _checked_form(form | {"entry_number": tasks.reread_entry_number(data, ph.content_type or "image/jpeg", calls)}, known_filers)
+                again, _ = _checked_form(form | {"entry_number": tasks.reread_entry_number(data, mime, calls)}, known_filers)
                 if not EN.validate(again["entry_number"]):
-                    form, changed = again | {"entry_number_as_read": form.get("entry_number_as_read") or form["entry_number"]}, True
+                    form, changed = again | {"entry_number_as_read": form.get("entry_number_as_read") or form["entry_number"],
+                                             "entry_number_fix": "reread"}, True
             except LiveModelUnavailable:
                 pass
         review_grid.append({"file": ph.filename, "fields": form, "corrected": changed})
         entries.append(form_to_entry(form, ph.filename))
     if photos:
         steps.append({"step": "Read your form photos", "detail": f"{len(review_grid)} photos", "model": settings.super_vl.model_id})
+    if skipped:
+        extra_blockers.append({"key": "photos", "severity": "high", "title": f"{skipped} photo{'s' if skipped > 1 else ''} not read",
+                               "detail": "The AI photo reader isn't available right now, so only your spreadsheet is in this report.",
+                               "fix": "Upload the photos again later."})
 
     if not entries:
         raise HTTPException(400, "Add an ACE ES-003 export or photos of your entry summaries.")
     prof = _profile(profile)
     report = A.analyze(entries, prof, date.today())
+    report["blockers"] = extra_blockers + report["blockers"]
     steps.append({"step": "Apply the refund rules", "detail": f"{len(report['routes'])} entries routed (rules verified {C.RULES_VERIFIED_AS_OF:%b %d, %Y})", "model": None})
     report["review_grid"] = review_grid
     report["profile"] = asdict(prof)
@@ -178,51 +219,67 @@ async def analyze_upload(
 
 
 def _checked_form(form: dict, known_filers: set[str]) -> tuple[dict, bool]:
-    """Repair a look-alike misread in the entry number with the CBP check digit (Q read as 0, Z as 2...), and
-    cross-check the duty read from each tariff line against Block 37, the form's own total."""
+    """Repair a look-alike misread in the entry number with the CBP check digit (Q read as 0, Z as 2...), flag a number
+    that still fails it, and cross-check the duty read from each tariff line against Block 37, the form's own total."""
     form = dict(form)
     fixed, changed = EN.repair(form.get("entry_number", ""), known_filers)
     if changed:  # show both so the user can see why
         form["entry_number_as_read"], form["entry_number"] = form["entry_number"], EN.display(fixed)
+        form["entry_number_fix"] = "check_digit"
+    form["entry_number_problems"] = EN.validate(form.get("entry_number", "")) if form.get("entry_number") else ["Entry number not read"]
     form["duty_check"] = duty_check(form)
     return form, changed
 
 
 def duty_check(form: dict) -> dict:
     """The form checks itself: the line duties (column 34) should add up to Block 37. A gap means a digit was misread
-    or a line was missed, and the refund amount built from those lines is off; the user is asked to look."""
+    or a line was missed, and the refund amount built from those lines is off; the user is asked to look.
+    Tolerance is rounding only: 1 cent per amount, at most $1."""
     try:
-        lines = sum(float(d or 0) for ln in form.get("lines", []) for d in ln.get("duties", []))
+        duties = [float(d or 0) for ln in form.get("lines", []) for d in ln.get("duties", [])]
         total = float(form.get("total_duty") or 0)
     except (TypeError, ValueError):
-        return {"ok": None}
-    if not total and not lines:
-        return {"ok": None}
+        return {"ok": None, "reason": "Duty amounts not read"}
+    lines = round(sum(duties), 2)
+    if not total:
+        return {"ok": None, "reason": "Block 37 not read", "lines_sum": lines}
+    if not duties:
+        return {"ok": None, "reason": "No tariff-line duties read", "block_37": round(total, 2)}
     gap = round(total - lines, 2)
-    return {"ok": abs(gap) <= max(1.0, 0.005 * total), "lines_sum": round(lines, 2), "block_37": round(total, 2), "gap": gap}
+    tolerance = min(1.0, 0.01 * len(duties))
+    return {"ok": abs(gap) <= tolerance + 1e-9, "lines_sum": lines, "block_37": round(total, 2), "gap": gap, "tolerance": tolerance}
+
+
+def build_sample(forms: dict[str, dict]) -> dict:
+    """The demo importer's report from its ES-003 export and the given photo readings (same path as /api/sample, so
+    scripts/build_demo_cache.py writes its plan and explanations against exactly what visitors see)."""
+    entries, info = parse_csv((SAMPLE / "prairie_lantern_es003.csv").read_text())
+    review_grid = []
+    known_filers = {EN.normalize(e.entry_number)[:3] for e in entries if len(EN.normalize(e.entry_number)) == 11}
+    for name in sorted(forms):
+        form, changed = _checked_form(forms[name], known_filers)
+        review_grid.append({"file": name, "fields": form, "url": f"/api/sample/photo/{name}", "corrected": changed})
+        entries.append(form_to_entry(form, name))
+    prof = Profile(importer_number="00-7351942AA", has_ace_account=True, ach_refund_enrolled=False, corporate=True)
+    report = A.analyze(entries, prof, DEMO_TODAY)
+    report["review_grid"] = review_grid
+    report["pipeline"] = [
+        {"step": "Read your ES-003 export", "detail": f"{info['rows']} rows · {len(entries) - len(review_grid)} entries", "model": None},
+        {"step": f"Read {len(review_grid)} form photos", "detail": "Courier-handled shipments", "model": settings.super_vl.model_id},
+        {"step": "Apply the refund rules", "detail": f"{len(report['routes'])} entries routed (rules verified {C.RULES_VERIFIED_AS_OF:%b %d, %Y})", "model": None},
+    ]
+    report["profile"] = asdict(prof)
+    return report
 
 
 @app.get("/api/sample")
 def sample():
     """The demo importer: ES-003 export + three courier-handled form photos. Uses cached model outputs."""
     cache = _demo_cache()
-    entries, info = parse_csv((SAMPLE / "prairie_lantern_es003.csv").read_text())
-    review_grid = []
-    known_filers = {EN.normalize(e.entry_number)[:3] for e in entries if len(EN.normalize(e.entry_number)) == 11}
-    for p in sorted((SAMPLE / "photos").glob("*.jpg")):
-        form, changed = _checked_form(cache.get("forms", {}).get(p.name) or json.loads(p.with_suffix(".json").read_text()), known_filers)
-        review_grid.append({"file": p.name, "fields": form, "url": f"/api/sample/photo/{p.name}", "corrected": changed})
-        entries.append(form_to_entry(form, p.name))
-    prof = Profile(importer_number="00-7351942AA", has_ace_account=True, ach_refund_enrolled=False, corporate=True)
-    report = A.analyze(entries, prof, DEMO_TODAY)
-    report["review_grid"] = review_grid
-    report["pipeline"] = [
-        {"step": "Read your ES-003 export", "detail": f"{info['rows']} rows · {len(entries) - len(review_grid)} entries", "model": None},
-        {"step": "Read 3 form photos", "detail": "Courier-handled shipments", "model": settings.super_vl.model_id},
-        {"step": "Apply the refund rules", "detail": f"{len(report['routes'])} entries routed (rules verified {C.RULES_VERIFIED_AS_OF:%b %d, %Y})", "model": None},
-    ]
+    forms = {p.name: cache.get("forms", {}).get(p.name) or json.loads(p.with_suffix(".json").read_text())
+             for p in sorted((SAMPLE / "photos").glob("*.jpg"))}
+    report = build_sample(forms)
     report["calls"] = cache.get("calls", [])
-    report["profile"] = asdict(prof)
     report["demo"] = True
     report["report_id"] = _store(report)
     return JSONResponse(report)
@@ -249,10 +306,10 @@ def sample_file(name: str):
 def plan(body: dict):
     report = _get(body.get("report_id", ""))
     if report.get("demo") and _demo_cache().get("plan"):
-        return _demo_cache()["plan"] | {"cached": True}
+        return check_plan(_demo_cache()["plan"], report) | {"cached": True}
     calls: list[CallRecord] = []
     try:
-        out = tasks.action_plan(report, calls)
+        out = check_plan(tasks.action_plan(report, calls), report)
         return out | {"calls": _calls_json(calls)}
     except LiveModelUnavailable:
         return tasks.action_plan_fallback(report)
@@ -267,7 +324,9 @@ def explain(body: dict):
     route = next((r for r in report["routes"] if r["entry_number"] == num), None)
     if not route:
         raise HTTPException(404, "Entry not found in this report.")
-    cached = _demo_cache().get("explanations", {}).get(num) if report.get("demo") else None
+    cache = _demo_cache() if report.get("demo") else {}
+    # A cached explanation is used only for the rule it was written for: after a rule change it would state the old route.
+    cached = cache.get("explanations", {}).get(num) if cache.get("explanation_rules", {}).get(num) == route["rule_id"] else None
     if cached:
         return {"text": cached, "cached": True}
     calls: list[CallRecord] = []

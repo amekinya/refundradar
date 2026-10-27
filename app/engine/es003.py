@@ -10,7 +10,7 @@ from __future__ import annotations
 import csv
 import io
 import re
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 from app.engine import entry_number as EN
 from app.engine.models import Entry, Line
@@ -43,6 +43,7 @@ CANON: dict[str, tuple[str, ...]] = {
     "needs_psc": ("needs psc",),
 }
 REQUIRED = ("entry_number", "hts", "duty")
+DATE_FIELDS = ("entry_date", "liquidation_date", "deposit_date")
 
 
 def _key(h: str) -> str:
@@ -67,26 +68,45 @@ def missing_required(mapping: dict[str, str]) -> list[str]:
     return [f for f in REQUIRED if f not in have]
 
 
+# A trailing time of day ("2025-03-01 00:00:00" from pandas, "3/1/2025 0:00" from Excel, "2025-03-01T00:00:00Z").
+_TIME = re.compile(r"[ T]\d{1,2}:\d{2}(?::\d{2}(?:\.\d+)?)?\s*(?:[AaPp]\.?[Mm]\.?)?\s*(?:Z|[+-]\d{2}:?\d{2}|UTC|GMT)?$")
+_DATE_FORMATS = ("%Y-%m-%d", "%m/%d/%Y", "%m/%d/%y", "%Y%m%d", "%d-%b-%Y", "%d-%b-%y", "%b %d, %Y", "%B %d, %Y",
+                 "%d %b %Y", "%d %B %Y", "%Y/%m/%d", "%m-%d-%Y", "%m-%d-%y", "%m.%d.%Y")
+
+
 def parse_date(s: str) -> date | None:
+    """US-order dates in the formats ACE, Excel, pandas and brokers write, with or without a time of day.
+    Returns None if blank or unreadable; parse_csv records unreadable non-blank values so they're never silently lost."""
     s = (s or "").strip()
     if not s:
         return None
-    for fmt in ("%Y-%m-%d", "%m/%d/%Y", "%m/%d/%y", "%Y%m%d", "%d-%b-%Y", "%b %d, %Y", "%Y/%m/%d"):
+    core = _TIME.sub("", s).strip() or s
+    for fmt in _DATE_FORMATS:
         try:
-            return datetime.strptime(s, fmt).date()
+            return datetime.strptime(core, fmt).date()
         except ValueError:
             continue
+    if core.isdigit() and len(core) == 5 and 36526 <= int(core) <= 54789:  # an Excel serial day number (2000-2049)
+        return date(1899, 12, 30) + timedelta(days=int(core))
     return None
 
 
-def parse_money(s: str) -> float:
-    s = (s or "").strip().replace(",", "").replace("$", "")
+def parse_money_or_none(s: str) -> float | None:
+    """'$1,234.50', '1234.5', 'USD 500', '(12.00)' -> number; blank -> 0.0; anything else -> None."""
+    s = re.sub(r"(?i)^(?:US\$|USD|\$)|USD$|[\s,$]", "", (s or "").strip())
+    if not s:
+        return 0.0
     if s.startswith("(") and s.endswith(")"):
         s = "-" + s[1:-1]
     try:
         return float(s)
     except ValueError:
-        return 0.0
+        return None
+
+
+def parse_money(s: str) -> float:
+    v = parse_money_or_none(s)
+    return 0.0 if v is None else v
 
 
 def _bool(s: str) -> bool:
@@ -116,16 +136,17 @@ def parse_csv(text: str, header_map: dict[str, str] | None = None) -> tuple[list
             continue
         e = entries.get(num)
         if e is None:
+            dates = {f: g(f).strip() for f in DATE_FIELDS}
             e = Entry(
                 entry_number=num,
                 entry_type=(g("entry_type") or "01").strip().zfill(2)[:2],
-                entry_date=parse_date(g("entry_date")),
+                entry_date=parse_date(dates["entry_date"]),
                 importer_number=g("importer_number").strip(),
                 importer_name=g("importer_name").strip(),
                 country_of_origin=g("country_of_origin").strip(),
                 liquidation_status=g("liquidation_status").strip(),
-                liquidation_date=parse_date(g("liquidation_date")),
-                deposit_date=parse_date(g("deposit_date")),
+                liquidation_date=parse_date(dates["liquidation_date"]),
+                deposit_date=parse_date(dates["deposit_date"]),
                 protest_status=g("protest_status").strip().lower(),
                 protest_solely_ieepa=_bool(g("protest_solely_ieepa")) if g("protest_solely_ieepa") else None,
                 drawback=_bool(g("drawback")),
@@ -137,7 +158,12 @@ def parse_csv(text: str, header_map: dict[str, str] | None = None) -> tuple[list
                 on_cape_declaration=_bool(g("on_cape_declaration")),
                 needs_psc=_bool(g("needs_psc")),
             )
+            e.unparsed = {f: v for f, v in dates.items() if v and parse_date(v) is None}
             entries[num] = e
-        e.lines.append(Line(line_no=g("line_no") or str(len(e.lines) + 1), hts=g("hts"), duty=parse_money(g("duty")),
-                            value=parse_money(g("value"))))
+        line_no = g("line_no") or str(len(e.lines) + 1)
+        duty = parse_money_or_none(g("duty"))
+        if duty is None:
+            e.unparsed[f"duty (line {line_no})"] = g("duty").strip()
+        e.lines.append(Line(line_no=line_no, hts=g("hts"), duty=duty or 0.0, value=parse_money(g("value"))))
+    info["unparsed"] = sum(len(e.unparsed) > 0 for e in entries.values())
     return list(entries.values()), info

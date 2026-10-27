@@ -8,6 +8,8 @@
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const dateFmt = (iso) => iso ? new Date(iso + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "";
   const shortDate = (iso) => new Date(iso + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  // Local calendar date as YYYY-MM-DD (toISOString() is UTC, which is already the previous day east of UTC+12).
+  const ymd = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
   let report = null;
   let filter = null;
@@ -119,6 +121,7 @@
     let t = `You can claim about <span class="amt good">${fmt100(h.reachable_now)}</span> now.`;
     if (h.urgent_count) t += ` <span class="amt bad">${fmt100(h.urgent_amount)}</span> of it leaves CBP's refund tool within 3 weeks${h.urgent_soonest_days <= 7 ? `, the first in ${h.urgent_soonest_days} day${h.urgent_soonest_days === 1 ? "" : "s"}` : ""}.`;
     if (!h.reachable_now) t = `Nothing on these entries can go through CBP's refund tool today.`;
+    if (h.urgent_needs_decision_count) t += ` Another <span class="amt bad">${fmt100(h.urgent_needs_decision_amount)}</span> on ${h.urgent_needs_decision_count} entr${h.urgent_needs_decision_count > 1 ? "ies" : "y"} also nears the 80-day cutoff but needs a decision with your broker first.`;
     $("#verdictText").innerHTML = t;
     const parts = [];
     if (h.protest_amount) parts.push(`${fmt100(h.protest_amount)} needs a protest before its deadline`);
@@ -149,7 +152,7 @@
     const cols = [];
     for (let i = 0; i < nWeeks; i++) {
       const d = new Date(start); d.setDate(d.getDate() + 7 * i);
-      const key = d.toISOString().slice(0, 10);
+      const key = ymd(d);
       const w = byWeek[key] || { CAPE_80: [0, 0], PROTEST_180: [0, 0], CIT_2YR: [0, 0] };
       cols.push({ key, d, cape: w.CAPE_80, protest: w.PROTEST_180, cit: w.CIT_2YR });
     }
@@ -253,10 +256,14 @@
       const res = await fetch("/api/plan", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ report_id: report.report_id }) });
       const p = await res.json();
       if (!res.ok) throw new Error(p.detail);
-      $("#planMeta").textContent = p.fallback ? "Built from the rules (AI plan unavailable right now)." : "Written by Nemotron 3 Ultra from the numbers above. Check anything that matters with your broker.";
+      const ck = p.check;
+      const removed = ck ? ck.dropped.length : 0;
+      $("#planMeta").textContent = p.fallback ? "Built from the rules (AI plan unavailable right now)."
+        : `Written by Nemotron 3 Ultra from the numbers above, then checked by code against your report${removed ? `: ${removed} item${removed > 1 ? "s" : ""} that didn't match ${removed > 1 ? "were" : "was"} removed` : ""}${ck?.summary_replaced ? "; the summary is written from the numbers" : ""}. Check anything that matters with your broker.`;
       body.innerHTML = `<p class="summary">${esc(p.summary)}</p><ol class="steps">${p.steps.map((s) => `
         <li><span class="when">${esc(s.when)}<span class="who">${esc(s.who)}</span></span><span class="do">${esc(s.do)}</span><span class="why">${esc(s.why)}</span></li>`).join("")}</ol>
-        ${p.watch_outs?.length ? `<ul class="watch">${p.watch_outs.map((w) => `<li>${esc(w)}</li>`).join("")}</ul>` : ""}`;
+        ${p.watch_outs?.length ? `<ul class="watch">${p.watch_outs.map((w) => `<li>${esc(w)}</li>`).join("")}</ul>` : ""}
+        ${removed ? `<details class="plan-check"><summary>What the check removed</summary><ul>${ck.dropped.map((d) => `<li><q>${esc(d.text)}</q> ${esc(d.reasons.join("; "))}.</li>`).join("")}</ul></details>` : ""}`;
     } catch (e) { body.innerHTML = `<p>Couldn't write the plan: ${esc(e.message)}</p><button class="btn ghost" id="planBtn" type="button">Try again</button>`; $("#planBtn").addEventListener("click", loadPlan); }
   }
 
@@ -328,14 +335,15 @@
       const lineTxt = (f.lines || []).map((l) => l.hts_numbers.map((h, i) => `${h} · ${fmt2(l.duties[i] || 0)}`).join("<br>")).join("<br>");
       return `<article class="photo-card">${p.url ? `<img src="${p.url}" alt="Photo of entry summary ${esc(f.entry_number)}" loading="lazy">` : `<div></div>`}
         <div class="form-fields">
-          <div class="ff"><span>1. Entry no.</span><b>${esc(f.entry_number)}</b>${f.entry_number_as_read ? `<small class="fix">Read as ${esc(f.entry_number_as_read)}; corrected with the CBP check digit</small>` : ""}</div>
+          <div class="ff ${f.entry_number_problems?.length ? "risk" : ""}"><span>1. Entry no.</span><b>${esc(f.entry_number) || "—"}</b>${f.entry_number_as_read ? `<small class="fix">Read as ${esc(f.entry_number_as_read)}; ${f.entry_number_fix === "reread" ? "a second read passes" : "corrected with"} the CBP check digit</small>` : ""}${f.entry_number_problems?.length ? `<small class="warn">${esc(f.entry_number_problems[0].replace(/ \(warning only.*\)$/, ""))}. Check box 1 on the photo; it's left out of the broker list.</small>` : ""}</div>
           <div class="ff"><span>2. Entry type</span><b>${esc(f.entry_type)}</b></div>
           <div class="ff"><span>7. Entry date</span><b>${esc(f.entry_date)}</b></div>
           <div class="ff ${other ? "alert" : ""}"><span>23. Importer no.</span><b>${esc(f.importer_number)}</b></div>
           <div class="ff ${other ? "alert" : ""}"><span>26. Importer of record</span><b>${esc(f.importer_name)}</b></div>
           <div class="ff wide"><span>29 / 34. Tariff lines and duty</span><b>${lineTxt}</b></div>
-          <div class="ff"><span>37. Duty total</span><b>${fmt2(f.total_duty)}</b>${f.duty_check && f.duty_check.ok === true ? `<small class="ok">The tariff lines add up to this total</small>`
-            : f.duty_check && f.duty_check.ok === false ? `<small class="fix">The tariff lines add up to ${fmt2(f.duty_check.lines_sum)}, not ${fmt2(f.duty_check.block_37)}. Check the photo: a digit may be misread or a line missed.</small>` : ""}</div>
+          <div class="ff ${f.duty_check?.ok === false ? "risk" : ""}"><span>37. Duty total</span><b>${f.total_duty ? fmt2(f.total_duty) : "—"}</b>${f.duty_check?.ok === true ? `<small class="ok">The tariff lines add up to this total</small>`
+            : f.duty_check?.ok === false ? `<small class="warn">The tariff lines add up to ${fmt2(f.duty_check.lines_sum)}, not ${fmt2(f.duty_check.block_37)}. Check the photo: a digit may be misread or a line missed, so the refund amount may be off.</small>`
+            : f.duty_check?.reason ? `<small class="fix">${esc(f.duty_check.reason)}, so the tariff lines couldn't be checked against the form's total.</small>` : ""}</div>
           ${other ? `<p class="holder-note">The importer of record here is <strong>${esc(f.importer_name)}</strong>, not you, so this refund belongs to them. Ask them to file and pass it through.</p>` : ""}
         </div></article>`;
     }).join("");

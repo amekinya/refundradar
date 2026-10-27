@@ -229,6 +229,7 @@ tr.worst td:nth-child(5) { color: var(--stamp); font-weight: 700; }
 .ff span { display: block; font-size: 12px; color: var(--ink-2); }
 .ff b { font-family: var(--typed); font-weight: 700; font-size: 16px; word-break: break-word; }
 .ff.alert { background: var(--copy-pink-bg); }
+.ff.risk { background: var(--stamp-bg); }
 .ff.wide { grid-column: span 2; }
 .holder-note { grid-column: 1 / -1; padding: 10px 12px; background: var(--copy-pink-bg); color: var(--ink); border-radius: var(--radius); }
 
@@ -292,3 +293,7 @@ tr.worst td:nth-child(5) { color: var(--stamp); font-weight: 700; }
 
 .ff .fix { display: block; color: var(--ink-3); font-size: 12px; margin-top: 2px; }
 .ff .ok { display: block; color: var(--ledger); font-size: 12px; margin-top: 2px; }
+.ff .warn { display: block; color: var(--stamp); font-size: 12px; font-weight: 600; margin-top: 2px; }
+.plan-check { margin-top: 12px; font-size: 13px; color: var(--ink-3); }
+.plan-check summary { cursor: pointer; }
+.plan-check li { margin: 4px 0; }

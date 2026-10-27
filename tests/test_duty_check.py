@@ -14,3 +14,4 @@ def test_misread_digit_flagged():
 
 def test_missing_values():
     assert duty_check({"lines": [], "total_duty": 0})["ok"] is None
+    assert duty_check({"lines": [{"duties": [100.0]}], "total_duty": 0})["reason"] == "Block 37 not read"

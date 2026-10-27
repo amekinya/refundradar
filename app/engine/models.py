@@ -37,7 +37,10 @@ class Entry:
     on_cape_declaration: bool = False
     not_in_ace: bool = False
     needs_psc: bool = False  # e.g., INVALID HTS / HTS RELATIONSHIP MISMATCH known
-    source: str = "csv"  # csv | photo
+    source: str = "csv"  # csv | photo:<file name>
+    # What reading the input couldn't settle. Routing and blockers use these; nothing is guessed silently.
+    unparsed: dict[str, str] = field(default_factory=dict)  # field -> raw value that isn't a readable date or amount
+    duty_mismatch: tuple[float, float] | None = None  # photo: (tariff-line duties added up, Block 37) when they disagree
 
 
 @dataclass
@@ -77,3 +80,4 @@ class Route:
     source: str = "csv"
     notes: list[str] = field(default_factory=list)
     entry_problems: list[str] = field(default_factory=list)
+    flags: list[str] = field(default_factory=list)  # machine keys for blockers: unparsed, duty_mismatch, check_digit_photo, unreadable_number

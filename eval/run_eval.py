@@ -163,7 +163,13 @@ def forms() -> dict:
         fields["entry_number_after_check_digit"][0] += repaired_ok; fields["entry_number_after_check_digit"][1] += 1
         if not repaired_ok:
             unrepaired.append(flagged)
-        wrong = {k: [str(got.get(k, ""))[:40], str(truth.get(k, ""))[:40]] for k, v in checks.items() if not v and k in truth}
+        derived = {  # checks computed from the lines: show the computed values, not a missing key
+            "chapter99_lines": [sorted(h for l in got.get("lines", []) for h in l.get("hts_numbers", []) if h.startswith("9903")),
+                                sorted(h for l in truth["lines"] for h in l["hts_numbers"] if h.startswith("9903"))],
+            "ieepa_duty": [round(sum(d for l in got.get("lines", []) for h, d in zip(l.get("hts_numbers", []), l.get("duties", [])) if h.startswith("9903")), 2),
+                           round(sum(d for l in truth["lines"] for h, d in zip(l["hts_numbers"], l["duties"]) if h.startswith("9903")), 2)],
+        }
+        wrong = {k: [str(x)[:40] for x in derived.get(k, [got.get(k, ""), truth.get(k, "")])] for k, v in checks.items() if not v}
         per_photo.append({"file": f.name, "strength": truth["photo_strength"], "all_correct": all(checks.values()), "wrong": wrong,
                           "seconds": round(sum(c.seconds for c in local), 2), "cost_usd": round(sum(c.cost_usd for c in local), 5)})
     base = {k: v for k, v in fields.items() if k != "entry_number_after_check_digit"}

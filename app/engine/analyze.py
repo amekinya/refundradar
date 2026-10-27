@@ -5,7 +5,7 @@ from __future__ import annotations
 import csv
 import io
 from collections import Counter, defaultdict
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from datetime import UTC, date, datetime, timedelta
 
 from app.engine import catalog as C
@@ -19,12 +19,22 @@ ACTIONABLE = {"cape_now", "fix_first"}
 
 def analyze(entries: list[Entry], profile: Profile, today: date | None = None) -> dict:
     today = today or date.today()
-    # Duplicate entry numbers would sink a CAPE file; route each once and flag the rest.
-    seen: Counter[str] = Counter(EN.normalize(e.entry_number) for e in entries)
+    # Duplicate entry numbers would sink a CAPE file; route each once and flag the rest. An entry number that couldn't
+    # be read at all isn't a duplicate of another unreadable one: each keeps its own row, with a placeholder name.
+    seen: Counter[str] = Counter(k for k in (EN.normalize(e.entry_number) for e in entries) if k)
     unique: dict[str, Entry] = {}
+    blank = 0
     for e in entries:
-        unique.setdefault(EN.normalize(e.entry_number), e)
+        k = EN.normalize(e.entry_number)
+        if not k:
+            blank += 1
+            k, e = f"\0{blank}", replace(e, entry_number=f"Unreadable entry {blank}")
+        unique.setdefault(k, e)
     routes = [route_entry(e, profile, today) for e in unique.values()]
+    for r in routes:
+        if r.entry_number.startswith("Unreadable entry"):
+            r.flags.append("unreadable_number")
+            r.notes.append("The entry number couldn't be read. Copy it from box 1 of the form before anything is filed.")
 
     by_bucket: dict[str, dict] = {k: {"count": 0, "principal": 0.0, "interest": 0.0} for k in C.BUCKETS}
     for r in routes:
@@ -39,10 +49,11 @@ def analyze(entries: list[Entry], profile: Profile, today: date | None = None) -
     total_principal = round(sum(r.principal for r in routes if r.bucket != "not_eligible"), 2)
     total_interest = round(sum(r.interest for r in routes if r.bucket != "not_eligible"), 2)
 
-    urgent = sorted(
-        [r for r in mine if r.deadline_type == "CAPE_80" and r.days_left is not None and 0 <= r.days_left <= 21],
-        key=lambda r: r.days_left,
-    )
+    # "Leaves the refund tool within 3 weeks" is part of what's claimable now; entries that need a decision first
+    # (estimated dates, open protests) are counted separately so the urgent amount never exceeds the claimable one.
+    near = lambda r: r.deadline_type == "CAPE_80" and r.days_left is not None and 0 <= r.days_left <= 21  # noqa: E731
+    urgent = sorted([r for r in reachable if near(r)], key=lambda r: r.days_left)
+    urgent_other = sorted([r for r in mine if near(r) and r.bucket not in ACTIONABLE], key=lambda r: r.days_left)
     headline = {
         "total_principal": total_principal,
         "total_interest": total_interest,
@@ -55,9 +66,13 @@ def analyze(entries: list[Entry], profile: Profile, today: date | None = None) -
         "urgent_count": len(urgent),
         "urgent_amount": _sum(urgent),
         "urgent_soonest_days": urgent[0].days_left if urgent else None,
+        "urgent_needs_decision_count": len(urgent_other),
+        "urgent_needs_decision_amount": _sum(urgent_other),
+        "urgent_needs_decision_soonest_days": urgent_other[0].days_left if urgent_other else None,
         "protest_amount": _sum([r for r in mine if r.bucket == "protest"]),
         "litigation_amount": _sum([r for r in mine if r.bucket == "litigation"]),
-        "blocked_amount": _sum([r for r in mine if r.bucket in {"blocked", "review"}]),
+        "blocked_amount": _sum([r for r in mine if r.bucket == "blocked"]),  # waiting on CBP (surety, drawback, warehouse...)
+        "review_amount": _sum([r for r in mine if r.bucket == "review"]),  # ask your broker / confirm in ACE first
         "someone_else_amount": _sum(theirs),
         "someone_else_count": len(theirs),
         "entries": len(routes),
@@ -132,9 +147,27 @@ def _blockers(routes: list[Route], p: Profile, seen: Counter, reachable: list[Ro
         add("holder", "high", f"{len(theirs)} entries where someone else holds the claim",
             f"${_sum(theirs):,.0f} in IEEPA duty sits on entries where you weren't the importer of record (courier, forwarder or supplier).",
             "Ask that party to file and pass the refund through; couriers run their own programs. There's no federal pass-through rule, so check your contract.")
-    bad_nums = [r for r in routes if any("must be 11" in p_ or "digits" in p_ for p_ in r.entry_problems)]
+    bad_nums = [r for r in routes if any("must be 11" in p_ or "digits" in p_ for p_ in r.entry_problems) and "unreadable_number" not in r.flags]
     if bad_nums:
         add("format", "high", f"{len(bad_nums)} entry numbers in the wrong format", "CAPE rejects anything that isn't 11 characters.", "Fix these before your broker files.")
+    flagged = lambda key: [r for r in routes if key in r.flags]  # noqa: E731
+    if flagged("unparsed"):
+        n = len(flagged("unparsed"))
+        add("unparsed", "high", f"{n} entr{'ies' if n > 1 else 'y'} with dates or amounts we couldn't read",
+            "We didn't guess them. Entries with an unreadable date are set aside for you to confirm in ACE instead of being "
+            "routed as claimable; an unreadable duty counts as $0.",
+            "Fix those cells (dates like 2025-03-01 or 03/01/2025, amounts like 1234.50) and upload again, or check the entries in ACE.")
+    if flagged("duty_mismatch"):
+        n = len(flagged("duty_mismatch"))
+        add("dutycheck", "high", f"{n} form photo{'s' if n > 1 else ''} where the duties don't add up",
+            "The tariff-line duties read from the photo don't add up to the form's own total (Block 37), so a digit was "
+            "probably misread or a line missed. The refund amounts for those entries may be off.",
+            "Open the photo and compare the duty column with what we read before relying on the amount.")
+    if flagged("check_digit_photo") or flagged("unreadable_number"):
+        n = len(flagged("check_digit_photo")) + len(flagged("unreadable_number"))
+        add("photonum", "high", f"{n} entry number{'s' if n > 1 else ''} from photos to check",
+            "These don't pass CBP's check digit (or couldn't be read), so they're probably misread. They're left out of the "
+            "broker entry list.", "Read the entry number off box 1 of the form and correct it before your broker files.")
     dups = sum(c - 1 for c in seen.values() if c > 1)
     if dups:
         add("dupes", "medium", f"{dups} duplicate entry numbers removed", "Duplicates are rejected within a file and across declarations.", "Keep each entry once.")
@@ -171,7 +204,7 @@ def handoff_entry_list(report: dict) -> list[str]:
     for r in report["routes"]:
         if r["bucket"] in ACTIONABLE and r["holder"] == "you":
             e = EN.normalize(r["entry_number"])
-            if len(e) == 11:
+            if len(e) == 11 and e[3:].isdigit() and "check_digit_photo" not in r.get("flags", ()):
                 out.append(e)
     return out
 

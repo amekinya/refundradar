@@ -11,7 +11,7 @@ def normalize(raw: str) -> str:
 
 def display(entry: str) -> str:
     e = normalize(entry)
-    return f"{e[:3]}-{e[3:10]}-{e[10:]}" if len(e) == 11 else e
+    return f"{e[:3]}-{e[3:10]}-{e[10:]}" if len(e) == 11 else (str(entry or "").strip() or e)
 
 
 def _char_value(c: str) -> int:
@@ -58,10 +58,13 @@ _TO_DIGIT = {"O": "0", "Q": "0", "D": "0", "I": "1", "L": "1", "Z": "2", "S": "5
 
 
 def repair(raw: str, known_filers: set[str] | frozenset[str] = frozenset()) -> tuple[str, bool]:
-    """Fix a misread entry number using the check digit: try look-alike characters in the 3-character filer code
-    (and letters read in the digit part). Accept a fix only if exactly one candidate passes the check digit, and
-    (when the importer's other entries tell us its filer codes) that candidate uses a known filer code.
-    Returns (entry number, changed). A dropped or extra digit can't be fixed; validate() still flags it for review."""
+    """Fix a misread entry number using the check digit. Letters read in the digit part become the digit they look
+    like (O -> 0, S -> 5...). The 3-character filer code is changed only to one of the importer's known filer codes
+    (from its own ES-003 export), and only when the code as read isn't one of them: a misread serial digit plus a
+    look-alike filer code passes the mod-10 check digit by chance about 4 times in 10, so without known codes the
+    filer code is left as read and the number stays flagged for a re-read. Accept a fix only if exactly one candidate
+    passes the check digit. Returns (entry number, changed). A dropped or extra digit can't be fixed; validate() still
+    flags it for review."""
     from itertools import product
 
     e = normalize(raw)
@@ -70,10 +73,10 @@ def repair(raw: str, known_filers: set[str] | frozenset[str] = frozenset()) -> t
     serial = "".join(_TO_DIGIT.get(c, c) for c in e[3:])
     if not serial.isdigit():
         return e, False
-    cands = {"".join(f) + serial for f in product(*[[c, *_LOOKALIKE.get(c, "")] for c in e[:3]])}
-    cands = {c for c in cands if check_digit(c[:10]) == int(c[10])}
-    if known_filers:
-        cands = {c for c in cands if c[:3] in known_filers}
+    filers = {e[:3]}
+    if known_filers and e[:3] not in known_filers:
+        filers = {"".join(f) for f in product(*[[c, *_LOOKALIKE.get(c, "")] for c in e[:3]])} & set(known_filers)
+    cands = {f + serial for f in filers if check_digit((f + serial)[:10]) == int(serial[-1])}
     if len(cands) == 1:
         fixed = cands.pop()
         return fixed, fixed != e
