@@ -85,67 +85,77 @@
   }
  },
  "plan": {
-  "summary": "Total IEEPA duty paid is $243,524 with $14,948 interest; $145,551 (89 entries) is reachable now through CAPE. $25,226 across 12 entries is urgent (soonest deadline in 3 days), $47,467 needs protests before 180\u2011day deadlines, $32,499 requires court action, and $15,912 is blocked awaiting CBP guidance.",
+  "summary": "You have $243,524 in IEEPA principal plus $14,948 interest across 191 entries, with $145,551 reachable now through CAPE. The most urgent $25,226 across 12 entries must be filed by Oct 28\u2013Nov 13, while $47,467 requires protests and $28,580 may need court action.",
   "steps": [
    {
     "when": "2026-10-28 (3 days)",
-    "do": "File CAPE for entry Q7Z-4101104-9 ($1,810) and the other 11 urgent entries before their 80\u2011day deadlines expire.",
-    "why": "12 entries totaling $25,226 will lose CAPE eligibility if not filed by their individual deadlines.",
-    "who": "your broker"
+    "do": "File CAPE for entry Q7Z-4101104-9 ($1,810) and any other entries with an Oct 28 deadline.",
+    "why": "Importer or licensed broker via ACE",
+    "who": "you or your broker"
    },
    {
     "when": "2026-10-29 (4 days)",
     "do": "File CAPE for entry Q7Z-4100816-9 ($1,925).",
-    "why": "Deadline in 4 days; part of the $25,226 urgent bucket.",
-    "who": "your broker"
+    "why": "Importer or licensed broker via ACE",
+    "who": "you or your broker"
    },
    {
-    "when": "2026-11-01 (7 days)",
-    "do": "File CAPE for entry Q7Z-4100899-5 ($3,055) and Q7Z-4101238-5 ($2,230, deadline 2026-10-31).",
-    "why": "Two of the largest urgent entries; combined $5,285 at risk.",
-    "who": "your broker"
+    "when": "2026-11-01 (6\u20137 days)",
+    "do": "File CAPE for entries Q7Z-4101238-5 ($2,230) and Q7Z-4100899-5 ($3,055).",
+    "why": "Importer or licensed broker via ACE",
+    "who": "you or your broker"
    },
    {
-    "when": "2026-11-05",
-    "do": "Confirm your refund bank account with CBP.",
-    "why": "CBP holds ~$1.1B in approved refunds for missing banking details; your $145,551 reachable could sit there indefinitely.",
-    "who": "you"
+    "when": "2026-11-02 (8 days)",
+    "do": "File CAPE for entries Q7Z-4101039-7 ($1,050) and Q7Z-4100933-2 ($570).",
+    "why": "Importer or licensed broker via ACE",
+    "who": "you or your broker"
    },
    {
-    "when": "2026-11-05",
-    "do": "Resolve 3 open protests (Q7Z-4103107-0 $2,047.50, Q7Z-4103142-7 $1,852.50, Q7Z-4103424-9 $1,640) \u2014 if IEEPA\u2011only and within 80 days of liquidation, withdraw and file CAPE; otherwise keep protest.",
-    "why": "CAPE rejects protested entries; $5,540 principal blocked until resolved.",
-    "who": "your broker"
+    "when": "2026-11-06 (12 days)",
+    "do": "File CAPE for entries Q7Z-4100813-6 ($2,800), Q7Z-4101395-3 ($2,522.50), and Q7Z-4101154-4 ($952.50).",
+    "why": "Importer or licensed broker via ACE",
+    "who": "you or your broker"
    },
    {
-    "when": "2026-11-05",
-    "do": "File Post Summary Corrections for Q7Z-4103309-2 ($3,247.50) and Q7Z-4103339-9 ($2,450) before CAPE filing.",
-    "why": "PSC is blocked once CAPE accepts the entry; $5,697.50 principal in fix_first bucket.",
-    "who": "your broker"
+    "when": "2026-11-13 (19 days)",
+    "do": "File CAPE for entries Q7Z-4101421-7 ($3,602.50) and Q7Z-4100867-2 ($1,717.50).",
+    "why": "Importer or licensed broker via ACE",
+    "who": "you or your broker"
    },
    {
-    "when": "2026-11-05",
-    "do": "Notify your surety on the 2 surety\u2011paid entries (Q7Z-4103031-2 $405 + one other) \u2014 CBP has no surety refund process yet.",
-    "why": "Filing these in CAPE now will be rejected; $15,912 total blocked includes these.",
+    "when": "Before 2026-11-05",
+    "do": "Confirm your refund bank account in ACE so CBP can pay the $145,551 already approved; 20,362 refunds (~$1.1B) are currently held for missing details.",
+    "why": "Importer (you) in ACE",
     "who": "you"
    }
   ],
   "watch_outs": [
-   "Missing bank account: CBP pays refunds only electronically; without confirmed details your $145,551 could join the $1.1B already on hold.",
-   "Surety\u2011paid entries: No CAPE process exists; filing them now guarantees rejection. Wait for CBP guidance.",
-   "Open protests: CAPE rejects protested entries. Withdrawal is only allowed if the protest was IEEPA\u2011only and within 80 days of liquidation \u2014 otherwise the protest must stand.",
-   "Warehouse entry (type 21/22): Since July 7, 2026 CAPE rejects these; you must file withdrawal entries (types 31/32/34/38) instead. Entry Q7Z-4103424-9 ($1,640) is affected."
+   "Refund bank account not confirmed \u2013 CBP pays only electronically; your $145,551 could sit unpaid.",
+   "2 surety-paid entries ($1,590 + $405) \u2013 CBP says do not file these in CAPE; no surety refund process exists yet. Tell your surety.",
+   "3 entries with open protests \u2013 CAPE rejects protested entries. If a protest is only about IEEPA and within 80 days of liquidation, withdraw it and file CAPE; otherwise keep the protest. Ask your broker.",
+   "2 entries need a Post Summary Correction first (Q7Z-4103309-2 $3,247.50, Q7Z-4103339-9 $2,450) \u2013 PSC is blocked once CAPE accepts the entry. File PSC, then CAPE."
   ]
  },
  "explanations": {
-  "Q7Z-4103455-3": "This entry is suspended under AD/CVD rules, so the $1,520 in IEEPA duties plus $88.11 interest can be removed now, but the actual refund won\u2019t be paid until Commerce lifts the suspension. File the claim in ACE (CAPE) as soon as practical \u2014 there\u2019s no statutory deadline shown, but earlier filing gets you in line sooner. The timing of the suspension lift is uncertain, so the refund date is unknown.",
-  "Q7Z-4103309-2": "This entry requires a Post Summary Correction (PSC) to be filed and accepted before you can submit a CAPE claim for the IEEPA refund. You must file the PSC first; once CAPE accepts the entry, the PSC can no longer be filed, and the PSC itself does not claim the refund. There is no deadline or liquidation date provided, so the timing is uncertain\u2014act promptly to avoid missing any future cutoff. The guidance carries a \u201cP\u201d (probable) confidence tag, meaning the requirement is likely but not guaranteed; confirm with your broker or CBP if anything is unclear.",
-  "Q7Z-4101559-4": "This entry liquidated 81\u2013180 days ago and you\u2019re not a court plaintiff, so the CAPE refund path isn\u2019t available right now. To keep any chance of recovery, you must file a protest in ACE before the 180\u2011day deadline on **2026\u201110\u201127** (two days from now) and/or discuss a Court of International Trade case with counsel. The principal at stake is $1,567.50 plus $125.01 interest. The rule\u2019s \u201cP\u201d confidence tag means the protest/CIT route is plausible but not guaranteed\u2014outcome depends on facts and legal arguments not yet tested.",
-  "K4M-9231751-6": "This entry liquidated 81\u2013180 days ago and you are not the importer of record, so any refund belongs to that party and there is no CAPE path available today. To preserve your rights you must file a protest in ACE before the 180\u2011day deadline on 2026\u201111\u201124 (30 days left) and/or consult counsel about a CIT case. The liquidation date (2026\u201105\u201128) is estimated from the entry date and the importer\u2011of\u2011record discrepancy means you should verify everything in ACE before acting.",
-  "Q7Z-4102801-9": "This entry carries only a $530 Section\u202f122 surcharge \u2014 no IEEPA duty \u2014 so it cannot be refunded through the CAPE process. To keep any legal rights alive, you (or your broker) must file a protest within 180\u202fdays of the entry\u2019s liquidation. The liquidation date isn\u2019t shown here, so the exact protest deadline is unknown until you confirm it with your broker or CBP. Ask your broker or counsel promptly whether a protest is warranted and when it must be filed.",
-  "Q7Z-4103107-0": "Your entry has an open protest, and CAPE automatically rejects any protested entry \u2014 so the protest must be resolved before a CAPE refund can proceed. If the protest covers **only** the IEEPA tariffs and today is within 80 days of the 2026-06-25 liquidation, withdraw the protest and file the CAPE claim; otherwise, leave the protest in place. The critical unknowns are (1) whether the protest\u2019s scope is limited to IEEPA and (2) whether you\u2019re still inside that 80-day window \u2014 both need confirmation before you act.",
-  "Q7Z-4103424-9": "Your warehouse entry (Q7Z-4103424-9) for $1,640 plus $69.31 interest can no longer be processed in CAPE because warehouse entries (types 21/22) have been rejected since July 7, 2026. You must file withdrawal entries (types 31, 32, 34, or 38) instead to pursue any refund. No deadline or liquidation date is shown in the data, so the timing is uncertain. The rule carries a \u201cP\u201d confidence tag, meaning it may still be proposed or subject to change.",
-  "Q7Z-4101104-9": "This entry liquidated on August\u202f9, 2026, so you have a CAPE refund of $1,810 principal plus $115.34 interest that CBP must accept if filed by day\u202f80 \u2014 October\u202f28, 2026 (three days from now). File the claim in CAPE immediately; the 80\u2011day window is a hard deadline. The \u201cP\u201d confidence tag means the rule interpretation is provisional, and the two listed programs (India\u202fRussian\u202foil, Reciprocal\u202fAug\u202f2025 rate) may affect eligibility but aren\u2019t quantified here."
+  "Q7Z-4103455-3": "This AD/CVD suspended entry has $1,520 in principal plus $88.11 in interest tied up. File the refund request in CAPE now so the IEEPA duties come off, but the actual refund won\u2019t be paid until Commerce lifts the suspension. No deadline is shown, so treat \u201cnow\u201d as the practical cutoff. The uncertain part is when Commerce will lift the suspension \u2014 that timing controls when you actually get paid.",
+  "Q7Z-4103309-2": "This entry requires a Post Summary Correction (PSC) to be filed and accepted before you can submit a CAPE claim for the IEEPA refund. You must file the PSC first\u2014through your broker in ACE\u2014then follow up with the CAPE filing; the PSC itself cannot claim the refund. No deadline or liquidation date is provided, so the timing is uncertain; act promptly to avoid missing any future cutoff. The rule carries a provisional confidence tag (P), meaning the guidance could be updated.",
+  "Q7Z-4101559-4": "This entry liquidated on April 30, 2026, putting it 81\u2013180 days past liquidation, so the CAPE refund path is not available today. You have **2 days (until October 27, 2026)** to file a protest in ACE to preserve your rights on the $1,567.50 principal plus $125.01 interest. After that, your main option is discussing a Court of International Trade case with counsel. The \u201cP\u201d confidence tag means this assessment is planning-level, not a guaranteed outcome.",
+  "Q7Z-4102801-9": "This entry contains only a $530 Section\u202f122 surcharge, which cannot be refunded through the CAPE/IEEPA process. To preserve any future claim, you (or your broker) must file a protest under 19\u202fU.S.C.\u202f\u00a7\u202f1514(c)(3) within 180\u202fdays of the entry\u2019s liquidation date. Because the liquidation date isn\u2019t provided, the exact deadline is uncertain \u2014 ask your broker or counsel to confirm it and file the protest on time. No IEEPA refund is available for this entry.",
+  "Q7Z-4103107-0": "Your entry has an open protest, and CAPE automatically rejects any protested entry \u2014 so the protest must be resolved before a refund can proceed. If the protest covers **only** the IEEPA duties and today is within 80 days of the 2026-06-25 liquidation date, you (or your broker) should withdraw the protest and file the CAPE claim; otherwise the protest stays in place. The critical unknowns are (1) whether the protest scope is limited to IEEPA and (2) whether you\u2019re still inside that 80-day window \u2014 both need confirmation before acting.",
+  "Q7Z-4103584-0": "This informal entry (type 11/12) likely liquidated around May\u202f9\u202f2025 \u2014 the date duty was paid \u2014 so the normal 80\u2011 to 180\u2011day protest window has almost certainly closed. The only recovery route now would be a court case, and the earliest filing deadline cited for that path is February\u202f1\u202f2027. Before committing to any legal action, confirm the exact liquidation date in ACE, because the May\u202f9 date is an estimate from the entry date. The total at stake is $1,935.74 (principal $1,777.50 + interest $158.24), and the confidence in the liquidation timing is low (tag\u202fU).",
+  "Q7Z-4103424-9": "Your warehouse entry (type 21/22) for $1,640 plus $69.31 interest can no longer be processed through CAPE because CBP stopped accepting that entry type on July 7, 2026. You must file withdrawal entries (types 31, 32, 34, or 38) instead to pursue any refund. No deadline appears in the data, so the timing is uncertain; the rule itself carries only a \u201cP\u201d confidence tag, meaning it may still be subject to change.",
+  "Q7Z-1454284-8": "This entry shows a potential refund of about $1,148 (principal plus interest), but the liquidation date of July\u202f4\u202f2026 is only an estimate, so the actual protest deadline \u2014 roughly December\u202f31\u202f2026 \u2014 is also uncertain. The records indicate the importer of record on this entry is not you, meaning any refund would belong to that party, not to your business. You should verify the true liquidation date and importer details in ACE (reports ES\u2011003 or ES\u2011022) before taking any further steps. Until those facts are confirmed, the amount, deadline, and your eligibility all remain unclear."
+ },
+ "explanation_rules": {
+  "Q7Z-4103455-3": "R10",
+  "Q7Z-4103309-2": "R19",
+  "Q7Z-4101559-4": "R13",
+  "Q7Z-4102801-9": "R0b",
+  "Q7Z-4103107-0": "R8",
+  "Q7Z-4103584-0": "R16",
+  "Q7Z-4103424-9": "R5",
+  "Q7Z-1454284-8": "RX"
  },
  "offer": {
   "company_name": "ClearPath Tariff Recovery Group",
@@ -184,7 +194,7 @@
    }
   ],
   "green_flags": [],
-  "advice": "Verify directly with CBP or your licensed customs broker whether any IEEPA refund program exists and how to file a claim yourself through ACE/CAPE. Never share ACE credentials or bank details with an unsolicited third party, and do not pay any upfront fee before confirming the refund is legitimate and already approved.",
+  "advice": "Verify directly with CBP or your licensed customs broker whether any IEEPA refund program exists and how to file a claim through ACE/CAPE yourself. Never share ACE credentials or bank details with an unsolicited third party, and do not pay any upfront fee before confirming the refund is real and already approved.",
   "model_flags_rejected": 1,
   "verdict": "likely_scam",
   "cost_on_your_numbers": 36882.85,
@@ -201,9 +211,9 @@
     "snippet": "#### Who We Serve\n\n#### Tools & Software\n\n#### Resources\n\n#### Company\n\n\u00a9 2026 CargoTrans, Inc., Licensed U.S. Customs Broker & Freight Forwarder.\n\nPowered by F5 Marketing [...] against the ES-003 detail, file within the window, and track it through CBP. Because our advisors and licensed brokers work together, the protest is prepared and filed by the same team that analyzed the entry, so the claim"
    },
    {
-    "title": "Court Certifies Class Action for IEEPA Tariff Refunds",
-    "url": "https://www.freightright.com/news/court-certifies-class-action-for-ieepa-tariff-refunds",
-    "snippet": "July 07, 2026\n\nIEEPA tariff refunds are managed through CBP systems, ACE data, CAPE declarations, and ACH refund setup. Learn why licensed customs brokers are often better positioned than lawyers to help importers recover eligible tariff refunds efficiently.\n\nRead More\n\n#### Months after IEEPA tariffs were struck down, some refunds remain caught between Customs and the courts\n\nSeptember 17, 2026 ["
+    "title": "Why Customs Brokers Are the Better Fit for IEEPA Tariff Refunds",
+    "url": "https://www.freightright.com/news/why-customs-brokers-are-the-better-fit-for-ieepa-tariff-refunds",
+    "snippet": "That distinction matters for importers deciding who should lead their refund recovery effort. Lawyers play an important role in litigation, protest strategy, and disputes. But for identifying eligible entries, preparing submissions, correcting data, managing ACE access, and coordinating refunds, a licensed customs broker is usually the better fit. [...] Lawyers continue to play an important role w"
    },
    {
     "title": "IEEPA Tariff Refund Recovery | Claim Overpaid Duties Fast",
@@ -211,9 +221,9 @@
     "snippet": "4.9 out of 5 based on 123 reviews Trustpilot5.0 out of 5 based on 124 reviews Google Reviews\n\nAs Featured In\n\nImage 5: Featured in major news, business, legal and local media outlets\nPublished across major news, business, legal, and local media platforms\n\nCIT Ruling-Ready Filing Process\n\n19 U.S.C. \u00a7 1514 Compliant\n\nLicensed Customs Brokers & Trade Counsel\n\nSOC 2 \u00b7 256-bit Encryption\n\n100% Continge"
    },
    {
-    "title": "Tariff Refunds Update \u2013 IEEPA Recovery Process \u201cKnowns\u201d And \u201cUnknowns\u201d | Benesch Law",
-    "url": "https://www.beneschlaw.com/insight/tariff-refunds-update-ieepa-recovery-process-knowns-and-unknowns",
-    "snippet": "First, any importer wishing to receive refunds must register for CBP\u2019s new ACH program. This new electronic refund system became effective on February 6, 2026. It was launched as a modernization effort independent from the IEEPA refund issue, but CBP is now clear that registration in the system is required for any recovery. Second, filing of a declaration with ACE will require accurate details on "
+    "title": "US customs agency says tariff refund system will be ready in 45 days",
+    "url": "https://ca.finance.yahoo.com/news/us-customs-agency-says-tariff-163601211.html",
+    "snippet": "Oops, something went wrong\n\nSkip to navigation  Skip to right column \n\nSign in [...] 5. Advanced Chart\n   6. Currency Converter\n5. Community\n6. Taxes [...] Reuters\n\n# US customs agency says tariff refund system will be ready in 45 days\n\nAPM Terminals at the Port of Los Angeles, California, U.S., March 4, 2026. REUTERS/Mike Blake \u00b7 Reuters\n\nReuters\n\nMarch 6 (Reuters) - The U.S. \u200cCustoms and \u200cBorder"
    }
   ]
  },
@@ -227,7 +237,7 @@
   {
    "role": "super_vl",
    "model_id": "nvidia/Nemotron-3.5-Super-VL",
-   "seconds": 2.4,
+   "seconds": 9.35,
    "tokens_in": 1676,
    "tokens_out": 307,
    "cached_in": 0,
@@ -237,7 +247,7 @@
   {
    "role": "super_vl",
    "model_id": "nvidia/Nemotron-3.5-Super-VL",
-   "seconds": 1.95,
+   "seconds": 2.71,
    "tokens_in": 1676,
    "tokens_out": 223,
    "cached_in": 0,
@@ -247,7 +257,7 @@
   {
    "role": "super_vl",
    "model_id": "nvidia/Nemotron-3.5-Super-VL",
-   "seconds": 1.79,
+   "seconds": 2.91,
    "tokens_in": 1676,
    "tokens_out": 224,
    "cached_in": 0,
@@ -257,122 +267,102 @@
   {
    "role": "ultra",
    "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
-   "seconds": 24.41,
-   "tokens_in": 6044,
-   "tokens_out": 6000,
+   "seconds": 9.6,
+   "tokens_in": 6963,
+   "tokens_out": 3760,
    "cached_in": 0,
-   "cost_usd": 0.02404,
+   "cost_usd": 0.01824,
    "purpose": "Write action plan"
   },
   {
    "role": "ultra",
    "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
-   "seconds": 13.29,
-   "tokens_in": 6044,
-   "tokens_out": 3503,
-   "cached_in": 0,
-   "cost_usd": 0.01655,
-   "purpose": "Write action plan"
-  },
-  {
-   "role": "ultra",
-   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
-   "seconds": 1.73,
+   "seconds": 1.27,
    "tokens_in": 365,
-   "tokens_out": 386,
+   "tokens_out": 408,
    "cached_in": 0,
-   "cost_usd": 0.00152,
+   "cost_usd": 0.00159,
    "purpose": "Explain entry Q7Z-4103455-3"
   },
   {
    "role": "ultra",
    "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
-   "seconds": 2.84,
+   "seconds": 1.48,
    "tokens_in": 393,
-   "tokens_out": 507,
+   "tokens_out": 514,
    "cached_in": 0,
-   "cost_usd": 0.00191,
+   "cost_usd": 0.00194,
    "purpose": "Explain entry Q7Z-4103309-2"
   },
   {
    "role": "ultra",
    "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
-   "seconds": 2.46,
+   "seconds": 1.73,
    "tokens_in": 396,
-   "tokens_out": 519,
+   "tokens_out": 525,
    "cached_in": 0,
-   "cost_usd": 0.00195,
+   "cost_usd": 0.00197,
    "purpose": "Explain entry Q7Z-4101559-4"
   },
   {
    "role": "ultra",
    "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
-   "seconds": 2.35,
-   "tokens_in": 427,
-   "tokens_out": 522,
-   "cached_in": 0,
-   "cost_usd": 0.00199,
-   "purpose": "Explain entry K4M-9231751-6"
-  },
-  {
-   "role": "ultra",
-   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
-   "seconds": 2.28,
+   "seconds": 0.94,
    "tokens_in": 371,
-   "tokens_out": 362,
+   "tokens_out": 260,
    "cached_in": 0,
-   "cost_usd": 0.00146,
+   "cost_usd": 0.00115,
    "purpose": "Explain entry Q7Z-4102801-9"
   },
   {
    "role": "ultra",
    "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
-   "seconds": 2.15,
+   "seconds": 1.83,
    "tokens_in": 368,
-   "tokens_out": 545,
+   "tokens_out": 547,
    "cached_in": 0,
-   "cost_usd": 0.002,
+   "cost_usd": 0.00201,
    "purpose": "Explain entry Q7Z-4103107-0"
   },
   {
    "role": "ultra",
    "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
-   "seconds": 1.9,
-   "tokens_in": 353,
-   "tokens_out": 444,
+   "seconds": 1.93,
+   "tokens_in": 454,
+   "tokens_out": 553,
    "cached_in": 0,
-   "cost_usd": 0.00169,
+   "cost_usd": 0.00211,
+   "purpose": "Explain entry Q7Z-4103584-0"
+  },
+  {
+   "role": "ultra",
+   "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+   "seconds": 1.5,
+   "tokens_in": 353,
+   "tokens_out": 438,
+   "cached_in": 0,
+   "cost_usd": 0.00167,
    "purpose": "Explain entry Q7Z-4103424-9"
   },
   {
    "role": "ultra",
    "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
-   "seconds": 2.0,
-   "tokens_in": 386,
-   "tokens_out": 515,
+   "seconds": 1.13,
+   "tokens_in": 414,
+   "tokens_out": 309,
    "cached_in": 0,
-   "cost_usd": 0.00193,
-   "purpose": "Explain entry Q7Z-4101104-9"
+   "cost_usd": 0.00134,
+   "purpose": "Explain entry Q7Z-1454284-8"
   },
   {
    "role": "ultra",
    "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
-   "seconds": 1.65,
+   "seconds": 1.4,
    "tokens_in": 494,
-   "tokens_out": 344,
+   "tokens_out": 345,
    "cached_in": 0,
    "cost_usd": 0.00153,
    "purpose": "Check refund offer"
   }
- ],
- "explanation_rules": {
-  "Q7Z-4103455-3": "R10",
-  "Q7Z-4103309-2": "R19",
-  "Q7Z-4101559-4": "R13",
-  "K4M-9231751-6": "R13",
-  "Q7Z-4102801-9": "R0b",
-  "Q7Z-4103107-0": "R8",
-  "Q7Z-4103424-9": "R5",
-  "Q7Z-4101104-9": "R12"
- }
+ ]
 }
