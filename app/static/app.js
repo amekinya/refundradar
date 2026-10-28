@@ -13,7 +13,7 @@
 
   let report = null;
   let filter = null;
-  let shown = 40;
+  let shown = 10;
 
   const GROUPS = [
     { key: "cape_now", label: "File in CBP's refund tool now", tone: "good" },
@@ -105,7 +105,7 @@
 
   // ---------- results ----------
   function render(data) {
-    report = data; filter = null; shown = 40;
+    report = data; filter = null; shown = 10;
     $("#working").hidden = true; $("#results").hidden = false; window.scrollTo(0, 0);
     $("#demoNote").hidden = !data.demo;
     renderVerdict(); renderStop(); renderRadar(); renderBuckets(); renderBlockers(); renderTable();
@@ -124,12 +124,12 @@
     if (h.urgent_needs_decision_count) t += ` Another <span class="amt bad">${fmt100(h.urgent_needs_decision_amount)}</span> on ${h.urgent_needs_decision_count} entr${h.urgent_needs_decision_count > 1 ? "ies" : "y"} also nears the 80-day cutoff but needs a decision with your broker first.`;
     $("#verdictText").innerHTML = t;
     const parts = [];
-    if (h.protest_amount) parts.push(`${fmt100(h.protest_amount)} needs a protest before its deadline`);
-    if (h.litigation_amount) parts.push(`${fmt100(h.litigation_amount)} can only be recovered in court or through the class action`);
-    if (h.someone_else_amount) parts.push(`${fmt100(h.someone_else_amount)} sits on entries where someone else was the importer of record`);
-    const tail = parts.length ? " " + (parts.length > 1 ? parts.slice(0, -1).join("; ") + "; and " + parts[parts.length - 1] : parts[0]) + "." : "";
-    const range = h.reachable_low != null ? ` Likely range for what you can claim now: ${fmt100(h.reachable_low)}–${fmt100(h.reachable_high)}, based on ${h.reachable_now_count} of ${h.entries} entries (interest method and "15% all-in" lines drive the spread).` : "";
-    $("#verdictSub").textContent = `Across ${h.entries} entries we found about ${fmt100(h.total_principal + h.total_interest)} in IEEPA duty and estimated interest.${tail}${range}`;
+    if (h.protest_amount) parts.push(`${fmt100(h.protest_amount)} needs a protest first`);
+    if (h.litigation_amount) parts.push(`${fmt100(h.litigation_amount)} only through court or the class action`);
+    if (h.someone_else_amount) parts.push(`${fmt100(h.someone_else_amount)} belongs to another importer of record`);
+    const tail = parts.length ? " Of the rest, " + (parts.length > 1 ? parts.slice(0, -1).join(", ") + " and " + parts[parts.length - 1] : parts[0]) + "." : "";
+    $("#verdictSub").textContent = `${h.entries} entries, about ${fmt100(h.total_principal + h.total_interest)} in IEEPA duty and interest in all.${tail}`;
+    if (h.reachable_low != null) $("#verdictSub").title = `Likely range for what you can claim now: ${fmt100(h.reachable_low)}–${fmt100(h.reachable_high)}, based on ${h.reachable_now_count} of ${h.entries} entries (interest method and "15% all-in" lines drive the spread).`;
   }
 
   function renderStop() {
@@ -237,7 +237,7 @@
       }).join("") + `</div>`;
     }).join("");
     $$(".bucket-row").forEach((b) => b.addEventListener("click", () => {
-      filter = filter === b.dataset.k ? null : b.dataset.k; shown = 40;
+      filter = filter === b.dataset.k ? null : b.dataset.k; shown = 10;
       $$(".bucket-row").forEach((x) => { x.classList.toggle("sel", x.dataset.k === filter); x.setAttribute("aria-pressed", x.dataset.k === filter); });
       renderTable(); $("#entriesTitle").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
     }));
@@ -286,9 +286,9 @@
       tr.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openEntry(tr.dataset.e); } });
     });
   }
-  $("#entrySearch").addEventListener("input", () => { shown = 40; renderTable(); });
+  $("#entrySearch").addEventListener("input", () => { shown = 10; renderTable(); });
   $("#clearFilter").addEventListener("click", () => { filter = null; $$(".bucket-row").forEach((x) => x.classList.remove("sel")); renderTable(); });
-  $("#moreRows").addEventListener("click", () => { shown += 60; renderTable(); });
+  $("#moreRows").addEventListener("click", () => { shown += 50; renderTable(); });
 
   function openEntry(num) {
     const r = report.routes.find((x) => x.entry_number === num); if (!r) return;

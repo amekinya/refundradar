@@ -149,19 +149,18 @@
         <button class="btn ghost" id="moreRows" type="button" hidden>Show more</button>
       </section>
 
-      <section class="photos" id="photosSec" aria-labelledby="photosTitle" hidden>
-        <div class="sec-head">
-          <h2 id="photosTitle">Read from your photos</h2>
-          <p>Nemotron 3.5 Super VL read these forms. Check each field against the photo; these are estimates until confirmed in ACE.</p>
+      <details class="fold photos" id="photosSec" hidden>
+        <summary><span id="photosTitle">Read from your photos</span> What Nemotron 3.5 Super VL read on each Form 7501, field by field</summary>
+        <div class="foldbody">
+          <p class="fine">Check each field against the photo; these are estimates until confirmed in ACE.</p>
+          <div id="photoGrid" class="photo-grid"></div>
         </div>
-        <div id="photoGrid" class="photo-grid"></div>
-      </section>
+      </details>
 
-      <section class="costs" aria-labelledby="costTitle">
-        <div class="sec-head">
-          <h2 id="costTitle">What it should cost to recover</h2>
-          <p id="costMeta"></p>
-        </div>
+      <details class="fold costs">
+        <summary><span id="costTitle">What it should cost to recover</span> Doing it yourself vs brokers and contingency firms, on your numbers</summary>
+        <div class="foldbody">
+        <p id="costMeta" class="fine"></p>
         <div class="table-wrap" tabindex="0" role="region" aria-label="Recovery cost comparison">
           <table id="costTable">
             <thead><tr><th scope="col">Option</th><th scope="col">How it's priced</th><th scope="col" class="num">Cost</th><th scope="col" class="num">You keep</th><th scope="col" class="num">Fee share</th></tr></thead>
@@ -169,7 +168,8 @@
           </table>
         </div>
         <p class="fine">Example prices published by providers in 2026. Compare against a real quote; prices change.</p>
-      </section>
+              </div>
+      </details>
 
       <section class="offer" aria-labelledby="offerTitle">
         <div class="sec-head">
